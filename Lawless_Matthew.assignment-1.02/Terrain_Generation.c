@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
 
     fillRectangle(w1, w2, gameBoard, '~');
 
-    dumpBoard(gameBoard);
+    // dumpBoard(gameBoard);
 
     //Forest
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]){
 
     fillRectangle(f1, f2, gameBoard, '^');
 
-    dumpBoard(gameBoard);
+    // dumpBoard(gameBoard);
 
    //find two disjoint regions of tall grass
    //generate two points
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
     fillRectangle(p, p1, gameBoard, ':');
     fillRectangle(q, q1, gameBoard, ':');
 
-    dumpBoard(gameBoard);
+    // dumpBoard(gameBoard);
 
     generatePaths(gameBoard);
 
