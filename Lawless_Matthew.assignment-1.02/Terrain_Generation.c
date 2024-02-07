@@ -58,10 +58,10 @@ void initArrE(arrE_t* a, struct Point p){
 
 void printMap(map_t map){
 
-    printf("eG: %d\n", map.eG);
-    printf("wG: %d\n", map.wG);
-    printf("nG: %d\n", map.nG);
-    printf("sG: %d\n", map.sG);
+    // printf("eG: %d\n", map.eG);
+    // printf("wG: %d\n", map.wG);
+    // printf("nG: %d\n", map.nG);
+    // printf("sG: %d\n", map.sG);
 
 
 
@@ -248,7 +248,7 @@ int main(int argc, char *argv[]){
     arrE_t currentEntry;
     while (w != 0){
 
-        printf("Enter command:\n");
+        // printf("Enter command:\n");
         
 
         scanf("%c", &c);
@@ -793,7 +793,7 @@ void generatePaths(char gameBoard[21][80], world_t* world, struct Point p){
     
 
     float buildProb = x * 100;
-    printf("%f", buildProb);
+    // printf("%f", buildProb);
     int randM = (rand() % 99); // [0, 99]
     int randC = (rand() % 99); // [0, 99]
 
@@ -802,11 +802,15 @@ void generatePaths(char gameBoard[21][80], world_t* world, struct Point p){
 
     while (true){
 
+        printf("stuck");
+
         int s = ((rand() % 76) + 1); // [1, 77]
 
         int currentY = 0;
 
         while (true){
+
+            printf("stuck");
 
             if (gameBoard[currentY][s] == '#'){
 
