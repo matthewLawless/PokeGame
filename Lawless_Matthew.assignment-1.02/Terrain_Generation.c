@@ -797,20 +797,23 @@ void generatePaths(char gameBoard[21][80], world_t* world, struct Point p){
     int randM = (rand() % 99); // [0, 99]
     int randC = (rand() % 99); // [0, 99]
 
+    int count;
+    count = 0;
 
-
-
+    
     while (true){
 
-        printf("stuck");
+        if (count == 100){
+
+            break;
+
+        }
 
         int s = ((rand() % 76) + 1); // [1, 77]
 
         int currentY = 0;
 
         while (true){
-
-            printf("stuck");
 
             if (gameBoard[currentY][s] == '#'){
 
@@ -836,6 +839,8 @@ void generatePaths(char gameBoard[21][80], world_t* world, struct Point p){
             break;
 
         }
+
+        count++;
 
 
     }
