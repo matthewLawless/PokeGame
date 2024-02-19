@@ -30,6 +30,7 @@ typedef struct node{
     int col;
 
     int distance;
+    int tCost;
 
 }node_t;
 
@@ -215,6 +216,8 @@ void NPCtoRival(NPC_t *npc){
     npc->PCntr = 50;
     npc->TGras = 20;
     npc->SGras = 10;
+    npc->Mtn = 4000;
+    npc->Forest = 4000;
 
 }
 
@@ -226,10 +229,10 @@ void printHeatMap(node_t *heatMap[21][80]){
         for (j = 0; j < 80; j++){
 
             int dMod = heatMap[i][j]->distance % 100;
-            if (dMod == 0){
+            if (dMod == 0 || dMod == 5){
 
                 printf("%d", 0);
-                printf("%d", 0);
+                printf("%d", dMod);
 
 
             }else{
@@ -244,6 +247,8 @@ void printHeatMap(node_t *heatMap[21][80]){
 
     }
 
+    printf("\n");
+
 
 }
 
@@ -254,17 +259,69 @@ static int32_t path_cmp(const void *key, const void *with) {
 
 
 
-void initNode(node_t *n, int row, int col, int distance){
+void initNode(node_t *n, int row, int col, int distance, int tCost){
 
     n->row = row;
     n->col = col;
     n->distance = distance;
+    n->tCost = tCost;
 
 }
 
-int findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
+int terrainCost(NPC_t npc, char c){
+
+    if (c == '#'){
+
+        return npc.Path;
+
+    }
+    else if (c == 'M'){
+
+        return npc.PMart;
+
+    }
+    else if (c == 'C'){
+
+        return npc.PCntr;
+
+    }
+    else if (c == ':'){
+
+        return npc.TGras;
+
+    }
+    else if (c == '.'){
+
+        return npc.SGras;
+
+    }
+    else if (c == '^'){
+
+        return npc.Forest;
+
+    }
+    else if (c == '%'){
+
+        return npc.Mtn;
+
+    }
+    else if (c == '~'){
+
+        //TEMP
+        return 4000;
+
+    }
+
+    return -1;
+
+
+}
+
+void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
     node_t *heatMap[21][80];
+    int isInHeap[21][80];
+    heap_node_t *heapNodeMap[21][80];
 
     heap_t h;
     heap_init(&h, path_cmp, NULL);
@@ -276,18 +333,24 @@ int findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
         for (j = 0; j < 80; j++){
 
+            isInHeap[i][j] = 1;
+
             node_t *newNode;
             newNode = malloc(sizeof(node_t));
 
             if (i == p.row && j == p.col){
 
-                initNode(newNode, i, j, 0);
+                int tc; 
+                tc = terrainCost(npc, map.screen[i][j]);
+                initNode(newNode, i, j, 11, tc);
 
             }
             else{
-                initNode(newNode, i, j, 4000);
+                int tc = terrainCost(npc, map.screen[i][j]);
+                initNode(newNode, i, j, 4000, tc);
             }
-            heap_insert(&h, newNode);
+            
+            heapNodeMap[i][j] = heap_insert(&h, newNode);
             heatMap[i][j] = newNode;
 
         }
@@ -295,25 +358,149 @@ int findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
     }
 
 
-    
-    
-
-
-    arrE_t currentSpot;
-    currentSpot.row = p.row;
-    currentSpot.col = p.col;
-
     printHeatMap(heatMap);
 
     //we put all nodes into heap;
     node_t *curNode;
 
-    while (curNode = heap_remove_min(&h)){
+    while ((curNode = heap_remove_min(&h))){
 
-        printf("%d", curNode->distance);
-        break;
+        printHeatMap(heatMap);
+        printf("%d\n", h.size);
+    
 
-    }
+        //mark as visited/remove from heap
+        isInHeap[curNode->row][curNode->col] = 0;
+
+        int r = curNode->row;
+        int c = curNode->col;
+
+        //need to find all neighbors and check if they are legit
+
+        //logically north
+        if ((r - 1 < 21 && r - 1 > -1 && c > -1 && c < 80) && (isInHeap[r - 1][c])){
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r-1][c]->distance){
+
+                heatMap[r-1][c]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r-1][c], heatMap[r-1][c]);
+
+            }
+
+        }
+
+        
+        //logically northeast    
+        if ((r - 1 < 21 && r - 1 > -1 && c + 1 > -1 && c + 1< 80) && (isInHeap[r - 1][c + 1])){
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r-1][c+1]->distance){
+
+                heatMap[r-1][c+1]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r-1][c+1], heatMap[r-1][c+1]);
+
+            }
+
+        }
+
+        //logically northwest
+        if ((r - 1 < 21 && r - 1 > -1 && c - 1 > -1 && c - 1 < 80) && (isInHeap[r - 1][c - 1])){
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r-1][c-1]->distance){
+
+                heatMap[r-1][c-1]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r-1][c-1], heatMap[r-1][c-1]);
+
+            }
+
+
+
+        }
+        //logically south
+        if ((r + 1 < 21 && r + 1 > -1 && c > -1 && c < 80) && (isInHeap[r + 1][c])){
+
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r+1][c]->distance){
+
+                heatMap[r+1][c]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r+1][c], heatMap[r+1][c]);
+
+            }
+
+
+        }
+
+        //logically southeast
+        if ((r + 1 < 21 && r + 1 > -1 && c + 1 > -1 && c + 1 < 80) && (isInHeap[r + 1][c + 1])){
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r+1][c+1]->distance){
+
+                heatMap[r+1][c+1]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r+1][c+1], heatMap[r+1][c+1]);
+
+            }
+
+        }
+        //logically southwest
+        if ((r + 1 < 21 && r + 1 > -1 && c - 1 > -1 && c - 1 < 80) && (isInHeap[r + 1][c - 1])){
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r+1][c-1]->distance){
+
+                heatMap[r+1][c-1]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r+1][c-1], heatMap[r+1][c-1]);
+
+            }
+
+        }
+
+        //logically east
+        if ((r < 21 && r > -1 && c + 1 > -1 && c + 1 < 80) && (isInHeap[r][c + 1])){
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r][c+1]->distance){
+
+                heatMap[r][c+1]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r][c+1], heatMap[r][c+1]);
+
+            }
+
+        }
+
+        //logically west
+        if ((r < 21 && r > -1 && c - 1 > -1 && c - 1 < 80) && (isInHeap[r][c - 1])){
+
+            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            if (alt < heatMap[r][c-1]->distance){
+
+                heatMap[r][c-1]->distance = alt;
+                heap_decrease_key(&h, heapNodeMap[r][c-1], heatMap[r][c-1]);
+
+            }
+
+        }
+
+
+
+
+
+            for (i = 0; i < 21; i++){
+
+                    for (j = 0; j < 80; j++){
+
+                        printf("%d ", isInHeap[i][j]);
+                        
+
+                    }
+                    printf("\n");
+
+                }
+
+
+            }
     
 
 
@@ -414,10 +601,15 @@ int main(int argc, char *argv[]){
     placePlayerChar(&pc, start);
     printMap(*start);
 
-    NPC_t NPC;
-    NPCtoHiker(&NPC);
+    NPC_t NPC1;
+    NPCtoHiker(&NPC1);
 
-    findShortestPaths(pc, *start, NPC);
+    NPC_t NPC2;
+    NPCtoRival(&NPC2);
+
+    findShortestPaths(pc, *start, NPC1);
+    printMap(*start);
+    // findShortestPaths(pc, *start, NPC2);
     
 
 
