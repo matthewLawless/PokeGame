@@ -1,0 +1,55 @@
+commit aef79412b0e7aa83ae490d3fb4c0eb738cb4444d
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Wed Feb 7 18:07:27 2024 -0600
+
+    Fixed bug. Prepped for submission
+    
+    Fixed bug identified in last commit. Did some testing. Made README for 1.02. Will add to changelog and submit soon.
+
+commit 9a31daef9abf0ba3d5e7f2be8ec6978bb9b13b87
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Wed Feb 7 13:55:40 2024 -0600
+
+    Identified bug in building placement subroutine
+    
+    One of my while loops to find a place to stick the buildings was infinite looping. I haven't actually fixed it yet, but earlier I deleted the entire file on accident and had to revert back to an old version. I lost less than an hour of work but now I'm paranoid and will be committing more frequently.
+
+commit 5eeaced6ffdfa9b51174234714ec84cc6fb5fbb9
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Tue Feb 6 22:58:09 2024 -0600
+
+    1.02 complete
+    
+    Added all functionality for assignment 1.02 including the following. Added functionality to generatePaths method so that we look at the gates of surrounding maps to pick our gates so that they match. If one of our maps is on the border of the world, we just write over the gate at the end of that generatingPaths method. Used the probability function given in spec to vary the spawn rates of the buildings. Implemented the I/O and commands n, e, s, w, f x y, q. Should be ready to turn in once I add README and update changelog.
+
+commit f51fc0473a85ab0e11efd69eb5035173b54a1ec5
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Sun Feb 4 22:22:02 2024 -0600
+
+    Started 1.02.
+    
+    Created world object that holds that 401x401 array. Created a populateMap method that can match the gates of neighboring maps (messed with path generation method). Moved some code from main method into their own functions.
+
+commit 41689f9070e878c56d37c9ace341fa65b45db418
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Sun Feb 4 12:10:46 2024 -0600
+
+    Prepped submission to 1.01, prepped for 1.02
+    
+    Added README and clean command to makefile. Created tarball and dumped it into testDirectory to check tarball. Switched directory name to 1.02.
+
+commit 60dcea29357e3a9cbd78923836b58965ef04bc97
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Sun Jan 28 12:45:02 2024 -0600
+
+    Finished terrain and path generation
+    
+    Started and finished method to generate the two required paths. Within that method we build the Pokemon centers and Pokemarts. Went back and finished general terrain generation and filling methods. Added all required terrains. Project should technically be complete with this commit.
+
+commit b636299da4c8c38e7cab19bfc9abaf4cb045c7d4
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Sat Jan 27 23:22:01 2024 -0600
+
+    Infrastructure for terrain generation
+    
+    Created the gameboard grid and begun to build the helper methods I will need in order to generate random disjoint rectangles of the grid and fill them. Made makefile.

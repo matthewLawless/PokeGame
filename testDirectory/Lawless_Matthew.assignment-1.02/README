@@ -1,0 +1,4 @@
+
+I think I did most things in the expected way to do them. Take input with scanf. Switch statement on the character input. For each of the directions, we basically just
+figure out the coordinate that this direction would take us to and then check if the corresponding map exists. If it does, display it. If it doesn't than we call our map building
+functions from 1.01, but tweak the path generation in way that we look at all surrounding maps (if they exist) and grab the gate opposite of the direction we are looking and use it as the gate of our current map direction we were looking. Fly is the same as above except our coordinates are given explicitly. For the variance in building generation did it the expected way. 
