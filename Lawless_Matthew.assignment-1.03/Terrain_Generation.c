@@ -50,20 +50,35 @@ typedef struct playerChar{
 
 void placePlayerChar(playerChar_t *PC, map_t *map){
 
-
+    
     while (true){
-        int row = (rand() % 19) + 1; // [1, 19]
         int col = (rand() % 78 + 1); // [1, 78]
 
-        if (map->screen[row][col] != '#'){
+        if (col != map->nG && col != map->sG){
 
-            map->screen[row][col] = '@';
-            PC->col = col;
-            PC->row = row;
-            break;
+
+            int i;
+            for (i = 1; i < 20; i++){
+
+                
+
+                if (map->screen[i][col] == '#'){
+
+                    map->screen[i][col] = '@';
+                    PC->col = col;
+                    PC->row = i;
+                    return;
+
+
+                }
+
+            }
 
         }
+
     }
+
+    return;
     
 
 }
@@ -203,7 +218,7 @@ void NPCtoHiker(NPC_t *npc){
     npc->PCntr = 50;
     npc->TGras = 15;
     npc->SGras = 10;
-    npc->Mtn = 15;
+    npc->Mtn = 4000;
     npc->Forest = 15;
 
 
@@ -228,7 +243,7 @@ void printHeatMap(node_t *heatMap[21][80]){
 
         for (j = 0; j < 80; j++){
 
-            if (heatMap[i][j] == 4000){
+            if (heatMap[i][j]->tCost == 4000){
 
                 printf("  ");
 
@@ -365,8 +380,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
                 
 
                 initNode(newNode, i, j, 4000, tc);
-                heapNodeMap[i][j] = heap_insert(&h, newNode);
-                heatMap[i][j] = newNode;
+
 
 
                 
@@ -374,22 +388,23 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
             }
             
- 
+                heapNodeMap[i][j] = heap_insert(&h, newNode);
+                heatMap[i][j] = newNode;
 
         }
 
     }
 
 
-    printHeatMap(heatMap);
+    // printHeatMap(heatMap);
 
     //we put all nodes into heap;
     node_t *curNode;
 
     while ((curNode = heap_remove_min(&h))){
 
-        printHeatMap(heatMap);
-        printf("%d\n", h.size);
+        // printHeatMap(heatMap);
+        // printf("%d\n", h.size);
 
         if (curNode->tCost == 4000){
 
@@ -526,21 +541,23 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
 
 
-            for (i = 0; i < 21; i++){
+            // for (i = 0; i < 21; i++){
 
-                    for (j = 0; j < 80; j++){
+            //         for (j = 0; j < 80; j++){
 
-                        printf("%d ", isInHeap[i][j]);
+            //             printf("%d ", isInHeap[i][j]);
                         
 
-                    }
-                    printf("\n");
+            //         }
+            //         printf("\n");
 
-                }
+            //     }
 
 
-            }
-    
+
+    }
+    printHeatMap(heatMap);
+
 
 
 
@@ -647,6 +664,7 @@ int main(int argc, char *argv[]){
     NPCtoRival(&NPC2);
 
     findShortestPaths(pc, *start, NPC1);
+    findShortestPaths(pc, *start, NPC2);
     printMap(*start);
     // findShortestPaths(pc, *start, NPC2);
     
