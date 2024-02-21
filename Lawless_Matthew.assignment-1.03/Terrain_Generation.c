@@ -228,6 +228,13 @@ void printHeatMap(node_t *heatMap[21][80]){
 
         for (j = 0; j < 80; j++){
 
+            if (heatMap[i][j] == 4000){
+
+                printf("  ");
+
+            }
+            else{
+
             int dMod = heatMap[i][j]->distance % 100;
             if (dMod == 0 || dMod == 5){
 
@@ -237,6 +244,7 @@ void printHeatMap(node_t *heatMap[21][80]){
 
             }else{
                 printf("%d", dMod);
+            }
             }
             if(j != 79){
             printf(" ");
@@ -311,6 +319,11 @@ int terrainCost(NPC_t npc, char c){
         return 4000;
 
     }
+    else if(c == '@'){
+
+        return 10;
+
+    }
 
     return -1;
 
@@ -342,16 +355,26 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
                 int tc; 
                 tc = terrainCost(npc, map.screen[i][j]);
-                initNode(newNode, i, j, 11, tc);
+                initNode(newNode, i, j, 0, tc);
 
             }
             else{
+
+
                 int tc = terrainCost(npc, map.screen[i][j]);
+                
+
                 initNode(newNode, i, j, 4000, tc);
+                heapNodeMap[i][j] = heap_insert(&h, newNode);
+                heatMap[i][j] = newNode;
+
+
+                
+
+
             }
             
-            heapNodeMap[i][j] = heap_insert(&h, newNode);
-            heatMap[i][j] = newNode;
+ 
 
         }
 
@@ -367,6 +390,12 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
         printHeatMap(heatMap);
         printf("%d\n", h.size);
+
+        if (curNode->tCost == 4000){
+
+            continue;
+
+        }
     
 
         //mark as visited/remove from heap
@@ -383,7 +412,8 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r-1][c]->distance){
 
                 heatMap[r-1][c]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r-1][c], heatMap[r-1][c]);
+                // heap_decrease_key(&h, heapNodeMap[r-1][c], heatMap[r-1][c]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r-1][c]);
 
             }
 
@@ -397,7 +427,9 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r-1][c+1]->distance){
 
                 heatMap[r-1][c+1]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r-1][c+1], heatMap[r-1][c+1]);
+                // heap_decrease_key(&h, heapNodeMap[r-1][c+1], heatMap[r-1][c+1]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r-1][c+1]);
+
 
             }
 
@@ -410,7 +442,9 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r-1][c-1]->distance){
 
                 heatMap[r-1][c-1]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r-1][c-1], heatMap[r-1][c-1]);
+                // heap_decrease_key(&h, heapNodeMap[r-1][c-1], heatMap[r-1][c-1]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r-1][c-1]);
+
 
             }
 
@@ -425,7 +459,8 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r+1][c]->distance){
 
                 heatMap[r+1][c]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r+1][c], heatMap[r+1][c]);
+                // heap_decrease_key(&h, heapNodeMap[r+1][c], heatMap[r+1][c]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r+1][c]);
 
             }
 
@@ -439,7 +474,8 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r+1][c+1]->distance){
 
                 heatMap[r+1][c+1]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r+1][c+1], heatMap[r+1][c+1]);
+                // heap_decrease_key(&h, heapNodeMap[r+1][c+1], heatMap[r+1][c+1]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r+1][c+1]);
 
             }
 
@@ -451,7 +487,8 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r+1][c-1]->distance){
 
                 heatMap[r+1][c-1]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r+1][c-1], heatMap[r+1][c-1]);
+                // heap_decrease_key(&h, heapNodeMap[r+1][c-1], heatMap[r+1][c-1]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r+1][c-1]);
 
             }
 
@@ -464,7 +501,8 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r][c+1]->distance){
 
                 heatMap[r][c+1]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r][c+1], heatMap[r][c+1]);
+                // heap_decrease_key(&h, heapNodeMap[r][c+1], heatMap[r][c+1]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r][c+1]);
 
             }
 
@@ -477,7 +515,8 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
             if (alt < heatMap[r][c-1]->distance){
 
                 heatMap[r][c-1]->distance = alt;
-                heap_decrease_key(&h, heapNodeMap[r][c-1], heatMap[r][c-1]);
+                // heap_decrease_key(&h, heapNodeMap[r][c-1], heatMap[r][c-1]);
+                heap_decrease_key_no_replace(&h, heapNodeMap[r][c-1]);
 
             }
 
