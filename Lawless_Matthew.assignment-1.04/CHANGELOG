@@ -1,3 +1,35 @@
+commit 996be3e67a6d9536b079f765560adce91de79666
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Tue Feb 20 20:18:21 2024 -0600
+
+    Prepped for submission.
+    
+    Cleaned everything up. Reread the spec and realized that PC needed to be on path. Did that. Wrote readme. Just need to append changelog and then package up to submit.
+
+commit d5cdc1785932fb8d80190df49c678eb764a6227d
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Tue Feb 20 18:03:16 2024 -0600
+
+    Dijkstra's working.
+    
+    Fixed the bug. Wasn't properly decreasing the key value of the nodes of the heap. Now dijkstras completely fills the map with the shortest paths, I just need to tweak it so we don't look at unwalkable terrain for the given npcs, and make it so when we print the map we don't print the unwalkable terrain.
+
+commit 6068c0215b084ed06c05a3edd1d93094353059d5
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Sun Feb 18 22:49:23 2024 -0600
+
+    Have dijkstra's 'running'
+    
+    Made a lot of progress. Seems to work for large sections of the map but for some reason not all nodes are being visited despite the heap being empty. Large portions of the map remain unreachable. Haven't debugged yet.
+
+commit 0fd8b1581ace0fa49b2f26ea1e436a67316c3393
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Sun Feb 18 18:21:34 2024 -0600
+
+    Started assignment 3.
+    
+    Moved into directory named for assignment 3. Imported Jeremy's heap over. Created a node object to store distance counts. Made new makefile to be able to use Jeremey's heap.
+
 commit aef79412b0e7aa83ae490d3fb4c0eb738cb4444d
 Author: matthewLawless <mjlawless04@gmail.com>
 Date:   Wed Feb 7 18:07:27 2024 -0600
