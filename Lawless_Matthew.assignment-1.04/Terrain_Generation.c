@@ -41,12 +41,12 @@ void initPoint(struct Point* p, int x, int y){
 
 }
 
-typedef struct playerChar{
+// typedef struct playerChar{
 
-    int row;
-    int col;
+//     int row;
+//     int col;
 
-}playerChar_t;
+// }playerChar_t;
 
 void placePlayerChar(playerChar_t *PC, map_t *map){
 
@@ -192,9 +192,11 @@ void initMap(world_t *world, struct Point h){
         for (j = 0; j < 80; j++){
 
             world->worldMaps[h1.row][h1.col]->terrainOnly[i][j] = world->worldMaps[h1.row][h1.col]->screen[i][j];
+            world->worldMaps[h1.row][h1.col]->characterTracker[i][j] = NULL;
 
         }
     }
+
 
 }
 
@@ -408,7 +410,7 @@ void spawnNPC(map_t *m, NPC_t *npc){
 
         if ((m->characterTracker[y1][x1] == NULL) && terrainCost(*npc, m->terrainOnly[y1][x1]) < 4000){
 
-            m->characterTracker[y1][x1] = npc->type;
+            m->characterTracker[y1][x1] = npc;
             m->screen[y1][x1] = npc->type;
             break;
 
@@ -705,7 +707,7 @@ arrE_t generateMove(map_t m, playerChar_t p, NPC_t npc){
 
 }
 
-void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
+void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
 
     node_t *heatMap[21][80];
     int isInHeap[21][80];
@@ -916,7 +918,42 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc){
 
 
     }
+    if (npc.type == 'r'){
+        for (i = 0; i < 21; i++){
+
+            for (j = 0; j < 80; j++){
+
+                m->rivalHeatMap[i][j] = heatMap[i][j]->distance;
+
+            }
+
+        }
+    }
+    else{
+
+        for (i = 0; i < 21; i++){
+
+            for (j = 0; j < 80; j++){
+
+                m->hikerHeatMap[i][j] = heatMap[i][j]->distance;
+
+            }
+
+        }
+
+
+
+
+    }
     printHeatMap(heatMap);
+
+
+
+
+
+}
+
+void computeHeatMaps(map_t *map){
 
 
 
@@ -978,12 +1015,137 @@ void generateTerrain(char gameBoard[21][80]){
 }
 
 
-void simulateGame(map_t *map){
 
-    
+//this may be a confusing name, but the pc will get one of these too!
+typedef struct npcNode{
+
+    int costOfNextMove;
+
+    NPC_t *npc;
+
+    int sequenceNumber;
+
+}npcNode_t;
+
+void initNpcNode(npcNode_t *node, int cost, NPC_t *guy, int seqNum){
+
+    node->costOfNextMove = cost;
+    node->npc = guy;
+    node->sequenceNumber = seqNum;
+
 
 
 }
+
+static int32_t costCompare(const void *key, const void *with) {
+  return ((npcNode_t *) key)->costOfNextMove - ((npcNode_t *) with)->costOfNextMove + (((npcNode_t *) key))->sequenceNumber - ((npcNode_t *) with)->sequenceNumber;
+}
+
+void move(map_t *map, NPC_t *npc, arrE_t dest){
+
+    arrE_t curLoc;
+    curLoc.row = npc->row;
+    curLoc.col = npc->col;
+
+    npc->row = dest.row;
+    npc->col = dest.col;
+
+    map->characterTracker[curLoc.row][curLoc.col] = NULL;
+    map->characterTracker[dest.row][dest.col] = npc;
+    map->screen[curLoc.row][curLoc.col] = map->terrainOnly[curLoc.row][curLoc.col];
+    map->screen[dest.row][dest.col] = npc->type;
+
+
+
+
+
+}
+
+void simulateGame(map_t *map){
+
+    //Need to make some sort of player object that will act as our vector to use the heap
+    //Need to make sure that players are init into the characterMap
+
+
+    //create heap
+    heap_t h;
+    heap_init(&h, costCompare, NULL);
+
+    
+    //first create a heap item for the pc
+    npcNode_t *playerChar;
+    playerChar = malloc(sizeof(npcNode_t));
+    //(for now, just init next move to ten, later this will be variable obviously)
+    initNpcNode(playerChar, 0, NULL, 0);
+    heap_insert(&h, playerChar);
+
+
+    
+
+    int currentCost;
+    int i;
+    for (i = 0; i < map->npcCount; i++){
+
+        npcNode_t *currentNPC;
+        currentNPC = malloc(sizeof(npcNode_t));
+        initNpcNode(currentNPC, 0, map->npcList[i], i + 1);
+        heap_insert(&h, currentNPC);
+
+    }
+
+    
+
+    npcNode_t *current;
+    while ((current = heap_remove_min(&h))){
+        
+
+        //this if check if the current turn is the players or an npcs
+        //the player has a NULL npc pointer
+        if (current->npc == NULL){
+
+            //gen a new pc node with + 10 cost just so it takes a turn;
+
+            //IF THE PC MOVES, THEN WE REGEN THE MAPS
+
+            
+
+            current->costOfNextMove = current->costOfNextMove + 10;
+
+            
+
+            heap_insert(&h, current);
+
+            printMap(*map);
+
+            
+
+            
+
+        }
+        else{
+
+            
+            arrE_t currentNextSpot;
+            currentNextSpot = generateMove(*map, *(map->pc), *(current->npc));
+            currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot.row][currentNextSpot.col]);
+
+            //actually move there, like update the visuals and map stuff
+            move(map, current->npc, currentNextSpot);
+
+            current->costOfNextMove = current->costOfNextMove + currentCost;
+            heap_insert(&h, current);
+            
+
+
+        }
+
+    }
+
+
+    
+}
+
+
 
 
 int main(int argc, char *argv[]){
@@ -1030,8 +1192,8 @@ int main(int argc, char *argv[]){
     NPC_t NPC2;
     NPCtoRival(&NPC2);
 
-    findShortestPaths(pc, *start, NPC1);
-    findShortestPaths(pc, *start, NPC2);
+    findShortestPaths(pc, *start, NPC1, start);
+    findShortestPaths(pc, *start, NPC2, start);
     printMap(*start);
 
     spawnNPC(start, &NPC1);
@@ -1047,6 +1209,8 @@ int main(int argc, char *argv[]){
     spawnNPC(start, &wanderer);
     // spawnNPC(start, explorer);
     printMap(*start);
+
+    simulateGame(start);
 
     // findShortestPaths(pc, *start, NPC2);
     

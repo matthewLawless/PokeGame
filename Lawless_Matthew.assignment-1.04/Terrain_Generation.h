@@ -20,6 +20,13 @@ typedef struct NPC{
 
 }NPC_t;
 
+typedef struct playerChar{
+
+    int row;
+    int col;
+
+}playerChar_t;
+
 struct Point{
     int x;
     int y;
@@ -33,11 +40,13 @@ typedef struct Map{
     struct Point worldCoordinates;
     char screen[21][80];
     char terrainOnly[21][80];
-    char characterTracker[21][80];
+    NPC_t *characterTracker[21][80];
     char rivalHeatMap[21][80];
     char hikerHeatMap[21][80];
     int npcCount;
     NPC_t *npcList[20];
+    playerChar_t *pc;
+
 }map_t;
 
 typedef struct World{
