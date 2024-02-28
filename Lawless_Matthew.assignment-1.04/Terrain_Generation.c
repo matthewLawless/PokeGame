@@ -81,6 +81,8 @@ void placePlayerChar(playerChar_t *PC, map_t *map){
 
     map->pc = PC;
 
+    
+
     return;
     
 
@@ -467,9 +469,13 @@ void spawnNPC(map_t *m, NPC_t *npc){
 //      7 npc 3
 //      6  5  4
 //
-void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
+void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
+
+    
 
     printf("gotahca");
+
+
     //Here we don't need to check if the heatMaps are updated, that is something we can do
     //every time we process a move from the character
     arrE_t next;
@@ -478,7 +484,7 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
     int colDifference;
     int nextRow;
     int nextCol;
-    switch (npc.type){
+    switch (npc->type){
 
         case 'h':
 
@@ -488,68 +494,68 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         minDistance = 4000;
         
             //north
-            if (m.hikerHeatMap[npc.row - 1][npc.col] < minDistance){
+            if (m->hikerHeatMap[npc->row - 1][npc->col] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row - 1][npc.col];
-                next.row = npc.row - 1;
-                next.col = npc.col;
+                minDistance = m->hikerHeatMap[npc->row - 1][npc->col];
+                next.row = npc->row - 1;
+                next.col = npc->col;
 
             }
             //northeast
-            if (m.hikerHeatMap[npc.row - 1][npc.col + 1] < minDistance){
+            if (m->hikerHeatMap[npc->row - 1][npc->col + 1] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row - 1][npc.col + 1];
-                next.row = npc.row - 1;
-                next.col = npc.col + 1;
+                minDistance = m->hikerHeatMap[npc->row - 1][npc->col + 1];
+                next.row = npc->row - 1;
+                next.col = npc->col + 1;
 
             }
             //east
-            if (m.hikerHeatMap[npc.row][npc.col + 1] < minDistance){
+            if (m->hikerHeatMap[npc->row][npc->col + 1] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row][npc.col + 1];
-                next.row = npc.row;
-                next.col = npc.col + 1;
+                minDistance = m->hikerHeatMap[npc->row][npc->col + 1];
+                next.row = npc->row;
+                next.col = npc->col + 1;
 
 
             }
             //southeast
-            if (m.hikerHeatMap[npc.row + 1][npc.col + 1] < minDistance){
+            if (m->hikerHeatMap[npc->row + 1][npc->col + 1] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row + 1][npc.col + 1];
-                next.row = npc.row + 1;
-                next.col = npc.col + 1;
+                minDistance = m->hikerHeatMap[npc->row + 1][npc->col + 1];
+                next.row = npc->row + 1;
+                next.col = npc->col + 1;
 
             };
             //south
-            if (m.hikerHeatMap[npc.row + 1][npc.col] < minDistance){
+            if (m->hikerHeatMap[npc->row + 1][npc->col] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row + 1][npc.col];
-                next.row = npc.row + 1;
-                next.col = npc.col;
+                minDistance = m->hikerHeatMap[npc->row + 1][npc->col];
+                next.row = npc->row + 1;
+                next.col = npc->col;
 
             }
             //southwest
-            if (m.hikerHeatMap[npc.row + 1][npc.col - 1] < minDistance){
+            if (m->hikerHeatMap[npc->row + 1][npc->col - 1] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row + 1][npc.col - 1];
-                next.row = npc.row + 1;
-                next.col = npc.col - 1;
+                minDistance = m->hikerHeatMap[npc->row + 1][npc->col - 1];
+                next.row = npc->row + 1;
+                next.col = npc->col - 1;
 
             };
             //west
-            if (m.hikerHeatMap[npc.row][npc.col - 1] < minDistance){
+            if (m->hikerHeatMap[npc->row][npc->col - 1] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row][npc.col - 1];
-                next.row = npc.row;
-                next.col = npc.col - 1;
+                minDistance = m->hikerHeatMap[npc->row][npc->col - 1];
+                next.row = npc->row;
+                next.col = npc->col - 1;
 
             }
             //northwest
-            if (m.hikerHeatMap[npc.row - 1][npc.col - 1] < minDistance){
+            if (m->hikerHeatMap[npc->row - 1][npc->col - 1] < minDistance){
 
-                minDistance = m.hikerHeatMap[npc.row - 1][npc.col - 1];
-                next.row = npc.row - 1;
-                next.col = npc.col - 1;
+                minDistance = m->hikerHeatMap[npc->row - 1][npc->col - 1];
+                next.row = npc->row - 1;
+                next.col = npc->col - 1;
 
             }
 
@@ -566,68 +572,68 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
             minDistance = 4000;
             
             //north
-            if (m.rivalHeatMap[npc.row - 1][npc.col] < minDistance){
+            if (m->rivalHeatMap[npc->row - 1][npc->col] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row - 1][npc.col];
-                next.row = npc.row - 1;
-                next.col = npc.col;
+                minDistance = m->rivalHeatMap[npc->row - 1][npc->col];
+                next.row = npc->row - 1;
+                next.col = npc->col;
 
             }
             //northeast
-            if (m.rivalHeatMap[npc.row - 1][npc.col + 1] < minDistance){
+            if (m->rivalHeatMap[npc->row - 1][npc->col + 1] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row - 1][npc.col + 1];
-                next.row = npc.row - 1;
-                next.col = npc.col + 1;
+                minDistance = m->rivalHeatMap[npc->row - 1][npc->col + 1];
+                next.row = npc->row - 1;
+                next.col = npc->col + 1;
 
             }
             //east
-            if (m.rivalHeatMap[npc.row][npc.col + 1] < minDistance){
+            if (m->rivalHeatMap[npc->row][npc->col + 1] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row][npc.col + 1];
-                next.row = npc.row;
-                next.col = npc.col + 1;
+                minDistance = m->rivalHeatMap[npc->row][npc->col + 1];
+                next.row = npc->row;
+                next.col = npc->col + 1;
 
 
             }
             //southeast
-            if (m.rivalHeatMap[npc.row + 1][npc.col + 1] < minDistance){
+            if (m->rivalHeatMap[npc->row + 1][npc->col + 1] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row + 1][npc.col + 1];
-                next.row = npc.row + 1;
-                next.col = npc.col + 1;
+                minDistance = m->rivalHeatMap[npc->row + 1][npc->col + 1];
+                next.row = npc->row + 1;
+                next.col = npc->col + 1;
 
             };
             //south
-            if (m.rivalHeatMap[npc.row + 1][npc.col] < minDistance){
+            if (m->rivalHeatMap[npc->row + 1][npc->col] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row + 1][npc.col];
-                next.row = npc.row + 1;
-                next.col = npc.col;
+                minDistance = m->rivalHeatMap[npc->row + 1][npc->col];
+                next.row = npc->row + 1;
+                next.col = npc->col;
 
             }
             //southwest
-            if (m.rivalHeatMap[npc.row + 1][npc.col - 1] < minDistance){
+            if (m->rivalHeatMap[npc->row + 1][npc->col - 1] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row + 1][npc.col - 1];
-                next.row = npc.row + 1;
-                next.col = npc.col - 1;
+                minDistance = m->rivalHeatMap[npc->row + 1][npc->col - 1];
+                next.row = npc->row + 1;
+                next.col = npc->col - 1;
 
             };
             //west
-            if (m.rivalHeatMap[npc.row][npc.col - 1] < minDistance){
+            if (m->rivalHeatMap[npc->row][npc->col - 1] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row][npc.col - 1];
-                next.row = npc.row;
-                next.col = npc.col - 1;
+                minDistance = m->rivalHeatMap[npc->row][npc->col - 1];
+                next.row = npc->row;
+                next.col = npc->col - 1;
 
             }
             //northwest
-            if (m.rivalHeatMap[npc.row - 1][npc.col - 1] < minDistance){
+            if (m->rivalHeatMap[npc->row - 1][npc->col - 1] < minDistance){
 
-                minDistance = m.rivalHeatMap[npc.row - 1][npc.col - 1];
-                next.row = npc.row - 1;
-                next.col = npc.col - 1;
+                minDistance = m->rivalHeatMap[npc->row - 1][npc->col - 1];
+                next.row = npc->row - 1;
+                next.col = npc->col - 1;
 
             }
             break;
@@ -641,13 +647,13 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         //need to find the direction we were moving
         
 
-        rowDifference = abs(npc.row - npc.prow);
-        colDifference = abs(npc.col - npc.pcol);
+        rowDifference = abs(npc->row - npc->prow);
+        colDifference = abs(npc->col - npc->pcol);
 
-        nextRow = rowDifference + npc.row;
-        nextCol = colDifference + npc.col;
+        nextRow = rowDifference + npc->row;
+        nextCol = colDifference + npc->col;
 
-        if (terrainCost(npc, m.terrainOnly[nextRow][nextCol]) < 4000 && m.characterTracker[nextRow][nextCol] == NULL){
+        if (terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL){
 
             
             next.col = nextCol;
@@ -658,8 +664,8 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         else{
 
             //go backwards
-            next.col = npc.pcol;
-            next.row = npc.prow;
+            next.col = npc->pcol;
+            next.row = npc->prow;
 
 
         }
@@ -673,13 +679,13 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         //else, gen a random number between 1 and 7 to choose between the remaining 7 directions.
         //make sure to check that this direction is indeed legitimate
 
-        rowDifference = abs(npc.row - npc.prow);
-        colDifference = abs(npc.col - npc.pcol);
+        rowDifference = abs(npc->row - npc->prow);
+        colDifference = abs(npc->col - npc->pcol);
 
-        nextRow = rowDifference + npc.row;
-        nextCol = colDifference + npc.col;
+        nextRow = rowDifference + npc->row;
+        nextCol = colDifference + npc->col;
 
-        if (m.terrainOnly[npc.row][npc.col] == m.terrainOnly[nextRow][nextCol] && m.characterTracker[nextRow][nextCol] == NULL){
+        if (m->terrainOnly[npc->row][npc->col] == m->terrainOnly[nextRow][nextCol] && m->characterTracker[nextRow][nextCol] == NULL){
 
             
             next.col = nextCol;
@@ -690,8 +696,8 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         else{
 
             //for now, just turn aorund, eventually add the randomizer in here
-            next.col = npc.pcol;
-            next.row = npc.prow;
+            next.col = npc->pcol;
+            next.row = npc->prow;
 
 
         }
@@ -711,13 +717,13 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         case 'e':
             //
             
-        rowDifference = abs(npc.row - npc.prow);
-        colDifference = abs(npc.col - npc.pcol);
+        rowDifference = abs(npc->row - npc->prow);
+        colDifference = abs(npc->col - npc->pcol);
 
-        nextRow = rowDifference + npc.row;
-        nextCol = colDifference + npc.col;
+        nextRow = rowDifference + npc->row;
+        nextCol = colDifference + npc->col;
 
-        if (terrainCost(npc, m.terrainOnly[nextRow][nextCol]) < 4000 && m.characterTracker[nextRow][nextCol] == NULL){
+        if (terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL){
 
             
             next.col = nextCol;
@@ -728,8 +734,8 @@ void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
         else{
 
             //for now, just turn aorund, eventually add the randomizer in here
-            next.col = npc.pcol;
-            next.row = npc.prow;
+            next.col = npc->pcol;
+            next.row = npc->prow;
 
 
         }
@@ -1138,7 +1144,14 @@ void simulateGame(map_t *map){
     //Need to make some sort of player object that will act as our vector to use the heap
     //Need to make sure that players are init into the characterMap
 
-
+    NPC_t *dummyHiker;
+    NPC_t *dummyRival;
+    dummyHiker = malloc(sizeof(NPC_t));
+    dummyRival = malloc(sizeof(NPC_t));
+    NPCtoHiker(dummyHiker);
+    NPCtoRival(dummyRival);
+    findShortestPaths(*(map->pc), *map, *dummyHiker, map);
+    findShortestPaths(*(map->pc), *map, *dummyRival, map);
 
     //create heap
     heap_t h;
@@ -1237,20 +1250,6 @@ void simulateGame(map_t *map){
             
             arrE_t *currentNextSpot;
             currentNextSpot = malloc(sizeof(arrE_t));
-            
-
-            // if (*(map->pc) != NULL && *(map->pc) && *(current->npc)){
-
-
-
-            // }
-            
-            *map;
-
-            *(map->pc);
-
-            *(current->npc);
-            dummyFunction(map, map->pc, current->npc);
 
             generateMove(map, map->pc, current->npc, currentNextSpot);
             currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot->row][currentNextSpot->col]);
