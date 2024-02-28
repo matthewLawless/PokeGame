@@ -15,6 +15,7 @@ void generatePaths(char gameBoard[21][80], world_t* world, struct Point p);
 void generateTerrain(char gameBoard[21][80]);
 void printPoint(struct Point p);
 bool validatePoint(struct Point p);
+void spawnNPC(map_t *m, NPC_t *npc);
 
 
 // struct Point {
@@ -77,6 +78,8 @@ void placePlayerChar(playerChar_t *PC, map_t *map){
         }
 
     }
+
+    map->pc = PC;
 
     return;
     
@@ -401,6 +404,37 @@ int terrainCost(NPC_t npc, char c){
 
 }
 
+void addNPC(map_t *map, char c){
+
+    NPC_t *npc;
+    npc = malloc(sizeof(NPC_t));
+
+    switch (c){
+
+        case 'h':
+            NPCtoHiker(npc);
+            break;
+
+
+        case 'r':
+            NPCtoRival(npc);
+            break;
+        case 'p':
+            NPCtoPacer(npc);
+            break;
+        case 'e':
+            printf("not implented yet");
+            break;
+        case 'w':
+            NPCtoWanderer(npc);
+            break;
+    }
+
+    spawnNPC(map, npc);
+
+
+}
+
 void spawnNPC(map_t *m, NPC_t *npc){
 
     //just choose a random x and random y, check if that terrain is valid 
@@ -412,6 +446,8 @@ void spawnNPC(map_t *m, NPC_t *npc){
 
             m->characterTracker[y1][x1] = npc;
             m->screen[y1][x1] = npc->type;
+            npc->row = y1;
+            npc->col = x1;
             break;
 
         }
@@ -431,8 +467,9 @@ void spawnNPC(map_t *m, NPC_t *npc){
 //      7 npc 3
 //      6  5  4
 //
-arrE_t generateMove(map_t m, playerChar_t p, NPC_t npc){
+void generateMove(map_t m, playerChar_t p, NPC_t npc, arrE_t *arr){
 
+    printf("gotahca");
     //Here we don't need to check if the heatMaps are updated, that is something we can do
     //every time we process a move from the character
     arrE_t next;
@@ -702,7 +739,8 @@ arrE_t generateMove(map_t m, playerChar_t p, NPC_t npc){
             break;
     }
 
-    return next;
+    arr->row = next.row;
+    arr->col = next.col;
 
 
 }
@@ -1061,10 +1099,45 @@ void move(map_t *map, NPC_t *npc, arrE_t dest){
 
 }
 
+void printNPC(NPC_t *npc){
+
+    if (npc == NULL){
+
+        printf("null pointer");
+
+    }
+    else{
+        printf("row %d\n", npc->row);
+        printf("col %d\n", npc->col);
+        printf("type %c\n\n", npc->type);
+    }
+
+    printf("done printing this npc\n");
+
+}
+
+void printNpcNode(npcNode_t *node){
+
+    if (node->npc == NULL){
+
+        printf("this node is the pc!!!\n");
+
+    }
+    else{
+        printf("npc:\n");
+        printNPC(node->npc);
+        printf("sequence number %d\n", node->sequenceNumber);
+    }
+
+    printf("done printing this npcnode\n");
+
+}
+
 void simulateGame(map_t *map){
 
     //Need to make some sort of player object that will act as our vector to use the heap
     //Need to make sure that players are init into the characterMap
+
 
 
     //create heap
@@ -1088,7 +1161,11 @@ void simulateGame(map_t *map){
 
         npcNode_t *currentNPC;
         currentNPC = malloc(sizeof(npcNode_t));
+        // printNPC(map->npcList[i]);
         initNpcNode(currentNPC, 0, map->npcList[i], i + 1);
+
+        // printNpcNode(currentNPC);
+
         heap_insert(&h, currentNPC);
 
     }
@@ -1098,10 +1175,96 @@ void simulateGame(map_t *map){
     npcNode_t *current;
     while ((current = heap_remove_min(&h))){
         
+        printNpcNode(current);
 
         //this if check if the current turn is the players or an npcs
         //the player has a NULL npc pointer
-        if (current->npc == NULL){
+        printNPC(current->npc);
+        // if (current->npc == NULL){
+
+        //     //gen a new pc node with + 10 cost just so it takes a turn;
+
+        //     //IF THE PC MOVES, THEN WE REGEN THE MAPS
+
+            
+
+        //     current->costOfNextMove = current->costOfNextMove + 10;
+        //     heap_insert(&h, current);
+        //     printf("right before printMap\n");
+        //     printMap(*map);
+        //     printf("right after printMap\n");
+
+            
+
+            
+
+        // }
+        // else{
+
+        //     printf("entered else statement");
+            
+        //     arrE_t currentNextSpot;
+
+        //     // if (*(map->pc) != NULL && *(map->pc) && *(current->npc)){
+
+
+
+        //     // }
+            
+        //     // *map;
+
+        //     // *(map->pc);
+
+        //     // *(current->npc);
+        //     // dummyFunction(map, map->pc, current->npc);
+
+        //     generateMove(*map, *(map->pc), *(current->npc), &currentNextSpot);
+        //     currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot.row][currentNextSpot.col]);
+
+        //     //actually move there, like update the visuals and map stuff
+        //     move(map, current->npc, currentNextSpot);
+
+        //     current->costOfNextMove = current->costOfNextMove + currentCost;
+        //     heap_insert(&h, current);
+            
+
+
+        // }
+        printf("right above if");
+        if (current->npc != NULL){
+
+            printf("entered else statement");
+            
+            arrE_t *currentNextSpot;
+            currentNextSpot = malloc(sizeof(arrE_t));
+            
+
+            // if (*(map->pc) != NULL && *(map->pc) && *(current->npc)){
+
+
+
+            // }
+            
+            *map;
+
+            *(map->pc);
+
+            *(current->npc);
+            dummyFunction(map, map->pc, current->npc);
+
+            generateMove(map, map->pc, current->npc, currentNextSpot);
+            currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot->row][currentNextSpot->col]);
+
+            //actually move there, like update the visuals and map stuff
+            move(map, current->npc, *currentNextSpot);
+
+            current->costOfNextMove = current->costOfNextMove + currentCost;
+            heap_insert(&h, current);
+
+
+
+        }
+        else{
 
             //gen a new pc node with + 10 cost just so it takes a turn;
 
@@ -1110,34 +1273,16 @@ void simulateGame(map_t *map){
             
 
             current->costOfNextMove = current->costOfNextMove + 10;
-
-            
-
             heap_insert(&h, current);
-
+            printf("right before printMap\n");
             printMap(*map);
+            printf("right after printMap\n");
 
-            
-
-            
-
-        }
-        else{
-
-            
-            arrE_t currentNextSpot;
-            currentNextSpot = generateMove(*map, *(map->pc), *(current->npc));
-            currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot.row][currentNextSpot.col]);
-
-            //actually move there, like update the visuals and map stuff
-            move(map, current->npc, currentNextSpot);
-
-            current->costOfNextMove = current->costOfNextMove + currentCost;
-            heap_insert(&h, current);
-            
 
 
         }
+
+        printf("is this even possible");
 
     }
 
@@ -1145,7 +1290,12 @@ void simulateGame(map_t *map){
     
 }
 
+void dummyFunction(map_t *map, playerChar_t *player, NPC_t *npc){
 
+    printf("hello world");
+    return;
+
+}
 
 
 int main(int argc, char *argv[]){
@@ -1182,35 +1332,50 @@ int main(int argc, char *argv[]){
     printMap(*start);
 
 
-    playerChar_t pc;
-    placePlayerChar(&pc, start);
+    playerChar_t *pc;
+    pc = malloc(sizeof(pc));
+    placePlayerChar(pc, start);
     printMap(*start);
 
-    NPC_t NPC1;
-    NPCtoHiker(&NPC1);
+    // NPC_t NPC1;
+    // NPCtoHiker(&NPC1);
+    
+    addNPC(start, 'h');
 
-    NPC_t NPC2;
-    NPCtoRival(&NPC2);
+    // NPC_t NPC2;
+    // NPCtoRival(&NPC2);
 
-    findShortestPaths(pc, *start, NPC1, start);
-    findShortestPaths(pc, *start, NPC2, start);
+    addNPC(start, 'r');
+
+    // findShortestPaths(pc, *start, NPC1, start);
+    // findShortestPaths(pc, *start, NPC2, start);
+    // printMap(*start);
+
+    // spawnNPC(start, &NPC1);
+    // spawnNPC(start, &NPC2);
     printMap(*start);
 
-    spawnNPC(start, &NPC1);
-    spawnNPC(start, &NPC2);
-    printMap(*start);
-
-    NPC_t pacer;
-    NPC_t wanderer;
+    // NPC_t pacer;
+    // NPC_t wanderer;
     NPC_t explorer;
-    NPCtoPacer(&pacer);
-    NPCtoWanderer(&wanderer);
-    spawnNPC(start, &pacer);
-    spawnNPC(start, &wanderer);
+    // NPCtoPacer(&pacer);
+    addNPC(start, 'p');
+    addNPC(start, 'w');
+    // NPCtoWanderer(&wanderer);
+    // spawnNPC(start, &pacer);
+    // spawnNPC(start, &wanderer);
     // spawnNPC(start, explorer);
     printMap(*start);
+    printf("-------------------------------------------\n");
+
+    // arrE_t move;
+    // generateMove(*start, pc, NPC1, &move);
+    // printf("%d", move.row);
 
     simulateGame(start);
+
+
+
 
     // findShortestPaths(pc, *start, NPC2);
     
