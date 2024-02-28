@@ -68,6 +68,7 @@ void placePlayerChar(playerChar_t *PC, map_t *map){
                     map->screen[i][col] = '@';
                     PC->col = col;
                     PC->row = i;
+                    map->pc = PC;
                     return;
 
 
@@ -79,13 +80,7 @@ void placePlayerChar(playerChar_t *PC, map_t *map){
 
     }
 
-    map->pc = PC;
-
-    
-
-    return;
-    
-
+   
 }
 
 
@@ -751,7 +746,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
 }
 
-void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
+void findShortestPaths(playerChar_t *p, map_t *map, NPC_t *npc, map_t *m){
 
     node_t *heatMap[21][80];
     int isInHeap[21][80];
@@ -772,17 +767,17 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
             node_t *newNode;
             newNode = malloc(sizeof(node_t));
 
-            if (i == p.row && j == p.col){
+            if (i == p->row && j == p->col){
 
                 int tc; 
-                tc = terrainCost(npc, map.screen[i][j]);
+                tc = terrainCost(*npc, map->screen[i][j]);
                 initNode(newNode, i, j, 0, tc);
 
             }
             else{
 
 
-                int tc = terrainCost(npc, map.screen[i][j]);
+                int tc = terrainCost(*npc, map->screen[i][j]);
                 
 
                 initNode(newNode, i, j, 4000, tc);
@@ -829,7 +824,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
 
         //logically north
         if ((r - 1 < 21 && r - 1 > -1 && c > -1 && c < 80) && (isInHeap[r - 1][c])){
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r-1][c]->distance){
 
                 heatMap[r-1][c]->distance = alt;
@@ -844,7 +839,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         //logically northeast    
         if ((r - 1 < 21 && r - 1 > -1 && c + 1 > -1 && c + 1< 80) && (isInHeap[r - 1][c + 1])){
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r-1][c+1]->distance){
 
                 heatMap[r-1][c+1]->distance = alt;
@@ -859,7 +854,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         //logically northwest
         if ((r - 1 < 21 && r - 1 > -1 && c - 1 > -1 && c - 1 < 80) && (isInHeap[r - 1][c - 1])){
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r-1][c-1]->distance){
 
                 heatMap[r-1][c-1]->distance = alt;
@@ -876,7 +871,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         if ((r + 1 < 21 && r + 1 > -1 && c > -1 && c < 80) && (isInHeap[r + 1][c])){
 
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r+1][c]->distance){
 
                 heatMap[r+1][c]->distance = alt;
@@ -891,7 +886,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         //logically southeast
         if ((r + 1 < 21 && r + 1 > -1 && c + 1 > -1 && c + 1 < 80) && (isInHeap[r + 1][c + 1])){
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r+1][c+1]->distance){
 
                 heatMap[r+1][c+1]->distance = alt;
@@ -904,7 +899,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         //logically southwest
         if ((r + 1 < 21 && r + 1 > -1 && c - 1 > -1 && c - 1 < 80) && (isInHeap[r + 1][c - 1])){
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r+1][c-1]->distance){
 
                 heatMap[r+1][c-1]->distance = alt;
@@ -918,7 +913,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         //logically east
         if ((r < 21 && r > -1 && c + 1 > -1 && c + 1 < 80) && (isInHeap[r][c + 1])){
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r][c+1]->distance){
 
                 heatMap[r][c+1]->distance = alt;
@@ -932,7 +927,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
         //logically west
         if ((r < 21 && r > -1 && c - 1 > -1 && c - 1 < 80) && (isInHeap[r][c - 1])){
 
-            int alt = heatMap[r][c]->distance + terrainCost(npc, map.screen[r][c]);
+            int alt = heatMap[r][c]->distance + terrainCost(*npc, map->screen[r][c]);
             if (alt < heatMap[r][c-1]->distance){
 
                 heatMap[r][c-1]->distance = alt;
@@ -962,7 +957,7 @@ void findShortestPaths(playerChar_t p, map_t map, NPC_t npc, map_t *m){
 
 
     }
-    if (npc.type == 'r'){
+    if (npc->type == 'r'){
         for (i = 0; i < 21; i++){
 
             for (j = 0; j < 80; j++){
@@ -1144,14 +1139,22 @@ void simulateGame(map_t *map){
     //Need to make some sort of player object that will act as our vector to use the heap
     //Need to make sure that players are init into the characterMap
 
-    NPC_t *dummyHiker;
-    NPC_t *dummyRival;
-    dummyHiker = malloc(sizeof(NPC_t));
-    dummyRival = malloc(sizeof(NPC_t));
-    NPCtoHiker(dummyHiker);
-    NPCtoRival(dummyRival);
-    findShortestPaths(*(map->pc), *map, *dummyHiker, map);
-    findShortestPaths(*(map->pc), *map, *dummyRival, map);
+    // NPC_t *dummyHiker;
+    // NPC_t *dummyRival;
+    // dummyHiker = malloc(sizeof(NPC_t));
+    // dummyRival = malloc(sizeof(NPC_t));
+    // NPCtoHiker(dummyHiker);
+    // NPCtoRival(dummyRival);
+    
+
+    NPC_t dummyHiker;
+    NPC_t dummyRival;
+    NPCtoHiker(&dummyHiker);
+    NPCtoRival(&dummyRival);
+
+
+    findShortestPaths(map->pc, map, &dummyHiker, map);
+    findShortestPaths(map->pc, map, &dummyRival, map);
 
     //create heap
     heap_t h;
@@ -1299,6 +1302,12 @@ void dummyFunction(map_t *map, playerChar_t *player, NPC_t *npc){
 
 int main(int argc, char *argv[]){
 
+    int x;
+    x = atoi(argv[1]);
+    printf("parameter 1 is: %d\n", x);
+
+    return 0;
+
     //init RNG
     srand(time(NULL));
 
@@ -1336,19 +1345,19 @@ int main(int argc, char *argv[]){
     placePlayerChar(pc, start);
     printMap(*start);
 
-    // NPC_t NPC1;
-    // NPCtoHiker(&NPC1);
+    NPC_t NPC1;
+    NPCtoHiker(&NPC1);
     
     addNPC(start, 'h');
 
-    // NPC_t NPC2;
-    // NPCtoRival(&NPC2);
+    NPC_t NPC2;
+    NPCtoRival(&NPC2);
 
     addNPC(start, 'r');
 
-    // findShortestPaths(pc, *start, NPC1, start);
-    // findShortestPaths(pc, *start, NPC2, start);
-    // printMap(*start);
+    findShortestPaths(pc, start, &NPC1, start);
+    findShortestPaths(pc, start, &NPC2, start);
+    printMap(*start);
 
     // spawnNPC(start, &NPC1);
     // spawnNPC(start, &NPC2);
@@ -1564,6 +1573,12 @@ int main(int argc, char *argv[]){
 
 
     return 0;
+}
+
+void printPc(playerChar_t *p){
+
+
+
 }
 
 bool validatePoint(struct Point p){
