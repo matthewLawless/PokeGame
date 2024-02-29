@@ -44,7 +44,7 @@ typedef struct Map{
     int rivalHeatMap[21][80];
     int hikerHeatMap[21][80];
     int npcCount;
-    NPC_t *npcList[20];
+    NPC_t *npcList[1000];
     playerChar_t *pc;
 
 }map_t;

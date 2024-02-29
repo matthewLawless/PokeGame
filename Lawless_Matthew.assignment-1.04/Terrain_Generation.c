@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include<string.h>
 #include "Terrain_Generation.h"
 
 
@@ -512,7 +513,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         minDistance = 4000;
         
             //north
-            if (terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col] < minDistance && (m->characterTracker[npc->row - 1][npc->col] == NULL)){
+            if (m->screen[npc->row - 1][npc->col] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col] < minDistance && (m->characterTracker[npc->row - 1][npc->col] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row - 1][npc->col];
                 next.row = npc->row - 1;
@@ -520,7 +521,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //northeast
-            if (terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col + 1]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col + 1] == NULL)){
+            if (m->screen[npc->row - 1][npc->col + 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col + 1]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col + 1] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row - 1][npc->col + 1];
                 next.row = npc->row - 1;
@@ -528,7 +529,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //east
-            if (terrainCost(*npc, m->terrainOnly[npc->row][npc->col + 1]) < 4000 && m->hikerHeatMap[npc->row][npc->col + 1] < minDistance && (m->characterTracker[npc->row][npc->col + 1] == NULL)){
+            if (m->screen[npc->row][npc->col + 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row][npc->col + 1]) < 4000 && m->hikerHeatMap[npc->row][npc->col + 1] < minDistance && (m->characterTracker[npc->row][npc->col + 1] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row][npc->col + 1];
                 next.row = npc->row;
@@ -537,7 +538,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //southeast
-            if (terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col + 1]) < 4000 && m->hikerHeatMap[npc->row + 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col + 1] == NULL)){
+            if (m->screen[npc->row + 1][npc->col + 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col + 1]) < 4000 && m->hikerHeatMap[npc->row + 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col + 1] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row + 1][npc->col + 1];
                 next.row = npc->row + 1;
@@ -545,7 +546,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             };
             //south
-            if (terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col]) < 4000 && m->hikerHeatMap[npc->row + 1][npc->col] < minDistance && (m->characterTracker[npc->row + 1][npc->col] == NULL)){
+            if (m->screen[npc->row + 1][npc->col] != '@' && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col]) < 4000 && m->hikerHeatMap[npc->row + 1][npc->col] < minDistance && (m->characterTracker[npc->row + 1][npc->col] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row + 1][npc->col];
                 next.row = npc->row + 1;
@@ -553,7 +554,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //southwest
-            if (terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col - 1]) < 4000 && m->hikerHeatMap[npc->row + 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col - 1] == NULL)){
+            if (m->screen[npc->row + 1][npc->col - 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col - 1]) < 4000 && m->hikerHeatMap[npc->row + 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col - 1] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row + 1][npc->col - 1];
                 next.row = npc->row + 1;
@@ -561,7 +562,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             };
             //west
-            if (terrainCost(*npc, m->terrainOnly[npc->row][npc->col - 1]) < 4000 && m->hikerHeatMap[npc->row][npc->col - 1] < minDistance && (m->characterTracker[npc->row][npc->col - 1] == NULL)){
+            if (m->screen[npc->row][npc->col - 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row][npc->col - 1]) < 4000 && m->hikerHeatMap[npc->row][npc->col - 1] < minDistance && (m->characterTracker[npc->row][npc->col - 1] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row][npc->col - 1];
                 next.row = npc->row;
@@ -569,7 +570,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //northwest
-            if (terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col - 1]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col - 1] == NULL)){
+            if (m->screen[npc->row - 1][npc->col - 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col - 1]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col - 1] == NULL)){
 
                 minDistance = m->hikerHeatMap[npc->row - 1][npc->col - 1];
                 next.row = npc->row - 1;
@@ -592,7 +593,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
             minDistance = 4000;
             
             //north
-            if (terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col] < minDistance && (m->characterTracker[npc->row - 1][npc->col] == NULL)){
+            if (m->screen[npc->row - 1][npc->col] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col] < minDistance && (m->characterTracker[npc->row - 1][npc->col] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row - 1][npc->col];
                 next.row = npc->row - 1;
@@ -600,7 +601,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //northeast
-            if (terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col + 1]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col + 1] == NULL)){
+            if (m->screen[npc->row - 1][npc->col + 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col + 1]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col + 1] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row - 1][npc->col + 1];
                 next.row = npc->row - 1;
@@ -608,7 +609,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //east
-            if (terrainCost(*npc, m->terrainOnly[npc->row][npc->col + 1]) < 4000 && m->rivalHeatMap[npc->row][npc->col + 1] < minDistance && (m->characterTracker[npc->row][npc->col + 1] == NULL)){
+            if (m->screen[npc->row][npc->col + 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row][npc->col + 1]) < 4000 && m->rivalHeatMap[npc->row][npc->col + 1] < minDistance && (m->characterTracker[npc->row][npc->col + 1] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row][npc->col + 1];
                 next.row = npc->row;
@@ -617,7 +618,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //southeast
-            if (terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col + 1]) < 4000 && m->rivalHeatMap[npc->row + 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col + 1] == NULL)){
+            if (m->screen[npc->row + 1][npc->col + 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col + 1]) < 4000 && m->rivalHeatMap[npc->row + 1][npc->col + 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col + 1] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row + 1][npc->col + 1];
                 next.row = npc->row + 1;
@@ -625,7 +626,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             };
             //south
-            if (terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col]) < 4000 && m->rivalHeatMap[npc->row + 1][npc->col] < minDistance && (m->characterTracker[npc->row + 1][npc->col] == NULL)){
+            if (m->screen[npc->row + 1][npc->col] != '@' && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col]) < 4000 && m->rivalHeatMap[npc->row + 1][npc->col] < minDistance && (m->characterTracker[npc->row + 1][npc->col] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row + 1][npc->col];
                 next.row = npc->row + 1;
@@ -633,7 +634,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //southwest
-            if (terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col - 1]) < 4000 && m->rivalHeatMap[npc->row + 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col - 1] == NULL)){
+            if (m->screen[npc->row + 1][npc->col - 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col - 1]) < 4000 && m->rivalHeatMap[npc->row + 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row + 1][npc->col - 1] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row + 1][npc->col - 1];
                 next.row = npc->row + 1;
@@ -641,7 +642,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             };
             //west
-            if (terrainCost(*npc, m->terrainOnly[npc->row][npc->col - 1]) < 4000 && m->rivalHeatMap[npc->row][npc->col - 1] < minDistance && (m->characterTracker[npc->row][npc->col - 1] == NULL)){
+            if (m->screen[npc->row][npc->col - 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row][npc->col - 1]) < 4000 && m->rivalHeatMap[npc->row][npc->col - 1] < minDistance && (m->characterTracker[npc->row][npc->col - 1] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row][npc->col - 1];
                 next.row = npc->row;
@@ -649,7 +650,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
             }
             //northwest
-            if (terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col - 1]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col - 1] == NULL)){
+            if (m->screen[npc->row - 1][npc->col - 1] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col - 1]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col - 1] < minDistance && (m->characterTracker[npc->row - 1][npc->col - 1] == NULL)){
 
                 minDistance = m->rivalHeatMap[npc->row - 1][npc->col - 1];
                 next.row = npc->row - 1;
@@ -673,7 +674,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
-        if (terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL && m->terrainOnly[nextRow][nextCol] == m->terrainOnly[npc->row][npc->col]){
+        if (m->screen[nextRow][nextCol] != '@' && terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL && m->terrainOnly[nextRow][nextCol] == m->terrainOnly[npc->row][npc->col]){
 
             
             next.col = nextCol;
@@ -705,7 +706,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
-        if (m->terrainOnly[npc->row][npc->col] == m->terrainOnly[nextRow][nextCol] && m->characterTracker[nextRow][nextCol] == NULL){
+        if (m->screen[nextRow][nextCol] != '@' && m->terrainOnly[npc->row][npc->col] == m->terrainOnly[nextRow][nextCol] && m->characterTracker[nextRow][nextCol] == NULL){
 
             
             next.col = nextCol;
@@ -716,8 +717,70 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         else{
 
             //for now, just turn aorund, eventually add the randomizer in here
-            next.col = npc->pcol;
+
             next.row = npc->prow;
+            next.col = npc->pcol;
+            
+            int ranNum = (rand() % 7); // [0, 7]
+
+            //north
+            if (m->screen[npc->row - 1][npc->col] != '@' && ranNum == 0 && m->terrainOnly[npc->row - 1][npc->col] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col;
+                next.row = npc->row - 1;
+
+            }
+            //northeast
+            if (m->screen[npc->row - 1][npc->col + 1] != '@' && ranNum == 1 && m->terrainOnly[npc->row - 1][npc->col + 1] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col + 1;
+                next.row = npc->row - 1;
+
+            }
+            //east
+            if (m->screen[npc->row][npc->col + 1] != '@' && ranNum == 2 && m->terrainOnly[npc->row][npc->col + 1] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col + 1;
+                next.row = npc->row;
+
+            }
+            //southeast
+            if (m->screen[npc->row + 1][npc->col + 1] != '@' && ranNum == 3 && m->terrainOnly[npc->row + 1][npc->col + 1] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col + 1;
+                next.row = npc->row + 1;
+
+            }
+            //south
+            if (m->screen[npc->row + 1][npc->col] != '@' && ranNum == 4 && m->terrainOnly[npc->row + 1][npc->col] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col;
+                next.row = npc->row + 1;
+
+            }
+            //southwest
+            if (m->screen[npc->row + 1][npc->col - 1] != '@' && ranNum == 5 && m->terrainOnly[npc->row + 1][npc->col - 1] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col - 1;
+                next.row = npc->row + 1;
+
+            }
+            //west
+            if (m->screen[npc->row][npc->col - 1] != '@' && ranNum == 6 && m->terrainOnly[npc->row][npc->col - 1] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col - 1;
+                next.row = npc->row;
+
+            }
+            //northwest
+            if (m->screen[npc->row - 1][npc->col - 1] != '@' && ranNum == 7 && m->terrainOnly[npc->row - 1][npc->col - 1] == m->terrainOnly[npc->row][npc->col]){
+
+                next.col = npc->col - 1;
+                next.row = npc->row - 1;
+
+            }
+
+            
 
 
         }
@@ -743,7 +806,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
-        if (terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL){
+        if (m->screen[nextRow][nextCol] != '@' && terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL){
 
             
             next.col = nextCol;
@@ -756,6 +819,65 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
             //for now, just turn aorund, eventually add the randomizer in here
             next.col = npc->pcol;
             next.row = npc->prow;
+
+            int ranNum = (rand() % 7); // [0, 7]
+
+            //north
+            if (m->screen[npc->row - 1][npc->col] != '@' && ranNum == 0 && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000){
+
+                next.col = npc->col;
+                next.row = npc->row - 1;
+
+            }
+            //northeast
+            if (m->screen[npc->row - 1][npc->col + 1] != '@' && ranNum == 1 && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col + 1]) < 4000){
+
+                next.col = npc->col + 1;
+                next.row = npc->row - 1;
+
+            }
+            //east
+            if (m->screen[npc->row][npc->col + 1] != '@' && ranNum == 2 && terrainCost(*npc, m->terrainOnly[npc->row][npc->col + 1]) < 4000){
+
+                next.col = npc->col + 1;
+                next.row = npc->row;
+
+            }
+            //southeast
+            if (m->screen[npc->row + 1][npc->col + 1] != '@' && ranNum == 3 && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col + 1]) < 4000){
+
+                next.col = npc->col + 1;
+                next.row = npc->row + 1;
+
+            }
+            //south
+            if (m->screen[npc->row + 1][npc->col] != '@' && ranNum == 4 && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col]) < 4000){
+
+                next.col = npc->col;
+                next.row = npc->row + 1;
+
+            }
+            //southwest
+            if (m->screen[npc->row + 1][npc->col - 1] != '@' && ranNum == 5 && terrainCost(*npc, m->terrainOnly[npc->row + 1][npc->col - 1]) < 4000){
+
+                next.col = npc->col - 1;
+                next.row = npc->row + 1;
+
+            }
+            //west
+            if (m->screen[npc->row][npc->col - 1] != '@' && ranNum == 6 && terrainCost(*npc, m->terrainOnly[npc->row][npc->col - 1]) < 4000){
+
+                next.col = npc->col - 1;
+                next.row = npc->row;
+
+            }
+            //northwest
+            if (m->screen[npc->row - 1][npc->col - 1] != '@' && ranNum == 7 && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col - 1]) < 4000){
+
+                next.col = npc->col - 1;
+                next.row = npc->row - 1;
+
+            }
 
 
         }
@@ -1292,7 +1414,7 @@ void simulateGame(map_t *map){
             current->costOfNextMove = current->costOfNextMove + currentCost;
             heap_insert(&h, current);
 
-            printMap(*map);
+            // printMap(*map);
 
         }
         else{
@@ -1332,9 +1454,38 @@ void dummyFunction(map_t *map, playerChar_t *player, NPC_t *npc){
 
 int main(int argc, char *argv[]){
 
-    // int x;
-    // x = atoi(argv[1]);
+    int x;
+    x=0;
+    // x = 8;
+    // if (strcmp(argv[1], "--numtrainers")){
+
+    //     x = atoi(argv[2]);
+
+    // }
+
     // printf("parameter 1 is: %d\n", x);
+
+    // printf("%d\n", argc);
+
+    // printf("%s\n", argv[1]);
+
+    char str1[] = "--numtrainers";
+
+    if (argc == 3 && strcmp(str1, argv[1]) == 0){
+
+        printf("Used switch\n");
+        x = atoi(argv[2]);
+
+    }
+    else{
+
+        printf("Switch not used\n");
+
+    }
+
+    
+    
+    
 
     //init RNG
     srand(time(NULL));
@@ -1376,12 +1527,12 @@ int main(int argc, char *argv[]){
     NPC_t NPC1;
     NPCtoHiker(&NPC1);
     
-    addNPC(start, 'h');
+    // addNPC(start, 'h');
 
     NPC_t NPC2;
     NPCtoRival(&NPC2);
 
-    addNPC(start, 'r');
+    // addNPC(start, 'r');
 
     findShortestPaths(pc, start, &NPC1, start);
     findShortestPaths(pc, start, &NPC2, start);
@@ -1396,9 +1547,44 @@ int main(int argc, char *argv[]){
     // NPC_t wanderer;
     NPC_t explorer;
     // NPCtoPacer(&pacer);
-    addNPC(start, 'e');
-    addNPC(start, 'p');
-    addNPC(start, 'w');
+    if (x == 0){
+        addNPC(start, 'h');
+        addNPC(start, 'r');
+        addNPC(start, 'e');
+        addNPC(start, 'p');
+        addNPC(start, 'w');
+        addNPC(start, 'e');
+        addNPC(start, 'w');
+        addNPC(start, 'p');
+    }
+    else{
+
+        addNPC(start, 'h');
+        addNPC(start, 'r');
+
+        int i, j;
+        for (i = 0; i < x - 2; i++){
+
+            if (i % 3 == 1){
+
+                addNPC(start, 'w');
+
+            }
+            else if(i % 3 == 2){
+
+                addNPC(start, 'e');
+
+            }
+            else{
+
+                addNPC(start, 'p');
+
+            }
+
+        }
+
+
+    }
     // NPCtoWanderer(&wanderer);
     // spawnNPC(start, &pacer);
     // spawnNPC(start, &wanderer);
