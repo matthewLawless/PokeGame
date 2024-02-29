@@ -41,8 +41,8 @@ typedef struct Map{
     char screen[21][80];
     char terrainOnly[21][80];
     NPC_t *characterTracker[21][80];
-    char rivalHeatMap[21][80];
-    char hikerHeatMap[21][80];
+    int rivalHeatMap[21][80];
+    int hikerHeatMap[21][80];
     int npcCount;
     NPC_t *npcList[20];
     playerChar_t *pc;
