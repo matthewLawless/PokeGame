@@ -17,6 +17,9 @@ typedef struct NPC{
     int Mtn;
     int Forest;
 
+    //0 if false, 1 if true
+    int foughtPC;
+
 
 }NPC_t;
 

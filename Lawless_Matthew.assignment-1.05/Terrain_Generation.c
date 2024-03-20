@@ -21,6 +21,7 @@ bool validatePoint(struct Point p);
 void spawnNPC(map_t *m, NPC_t *npc);
 int terrainCostPC(char c);
 int gateCheck(int r, int c);
+void printNpcLocation(int pcrow, int pccol, int row, int col);
 
 
 // struct Point {
@@ -130,7 +131,7 @@ void printMap(map_t map){
     // printf("sG: %d\n", map.sG);
 
     clear();
-
+    printw("\n");
     dumpBoard(map.screen);
     printf("World coordinates:");
     printPoint(map.worldCoordinates);
@@ -480,6 +481,7 @@ void spawnNPC(map_t *m, NPC_t *npc){
         }
 
     }
+    npc->foughtPC = 0;
     m->npcList[m->npcCount] = npc;
     m->npcCount++;
 
@@ -947,7 +949,7 @@ void findShortestPaths(playerChar_t *p, map_t *map, NPC_t *npc, map_t *m){
     }
 
 
-    printHeatMap(heatMap);
+    // printHeatMap(heatMap);
 
     //we put all nodes into heap;
     node_t *curNode;
@@ -1135,7 +1137,7 @@ void findShortestPaths(playerChar_t *p, map_t *map, NPC_t *npc, map_t *m){
 
 
     }
-    printHeatMap(heatMap);
+    // printHeatMap(heatMap);
 
 
 
@@ -1290,8 +1292,8 @@ void printNpcNode(npcNode_t *node){
 
 void movePC(int row, int col, map_t *map){
 
-    int oldrow = row;
-    int oldcol = col;
+    int oldrow = map->pc->row;
+    int oldcol = map->pc->col;
 
     map->pc->col = col;
     map->pc->row = row;
@@ -1360,11 +1362,11 @@ void simulateGame(map_t *map){
     npcNode_t *current;
     while ((current = heap_remove_min(&h))){
         
-        printNpcNode(current);
+        // printNpcNode(current);
 
         //this if check if the current turn is the players or an npcs
         //the player has a NULL npc pointer
-        printNPC(current->npc);
+        // printNPC(current->npc);
         // if (current->npc == NULL){
 
         //     //gen a new pc node with + 10 cost just so it takes a turn;
@@ -1415,10 +1417,10 @@ void simulateGame(map_t *map){
 
 
         // }
-        printf("right above if");
+        // printf("right above if");
         if (current->npc != NULL){
 
-            printf("entered else statement");
+            // printf("entered else statement");
             
             arrE_t *currentNextSpot;
             currentNextSpot = malloc(sizeof(arrE_t));
@@ -1442,123 +1444,355 @@ void simulateGame(map_t *map){
             //take input to figure out where we want to move
             int row;
             int col;
-            char curMove = getch();
-            switch (curMove){
+            int invalid = 1;
+            int moveCost;
+            while (invalid){
+                char curMove = getch();
+                switch (curMove){
 
-                case '7':
-                    //upper left - Northwest
-                    row = map->pc->row - 1;
-                    col = map->pc->col - 1;
+                    case '7':
+                        //upper left - Northwest
+                        row = map->pc->row - 1;
+                        col = map->pc->col - 1;
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                        // if (map->characterTracker[row][col]){
 
-                        movePC(row, col, map);
+                        //     printw("character here");
 
-                    }
-                    
-                    break;
-                case '8':
-                    //up - North
-                    row = map->pc->row - 1;
-                    col = map->pc->col;
+                        // }
+                        // else{
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                        //     printw("no character here");
 
-                        movePC(row, col, map);
+                        // }
 
-                    }
-                    break;
-                case '9':
-                    //upper right - Northeast
-                    row = map->pc->row - 1;
-                    col = map->pc->col + 1;
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                            movePC(row, col, map);
+                            invalid = 0;
 
-                        movePC(row, col, map);
+                        }
+                        // else{
 
-                    }
-                    break;
-                case '6':
-                    //right - East
-                    row = map->pc->row;
-                    col = map->pc->col + 1;
+                        //     printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                        // }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        
+                        break;
+                    case '8':
+                        //up - North
+                        row = map->pc->row - 1;
+                        col = map->pc->col;
 
-                        movePC(row, col, map);
+                        if (map->characterTracker[row][col]){
 
-                    }
-                    break;
-                case '3':
-                    //lower right - Southeast
-                    row = map->pc->row + 1;
-                    col = map->pc->col + 1;
+                            printw("character here");
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                        }
+                        else{
 
-                        movePC(row, col, map);
+                            printw("no character here");
 
-                    }
-                    break;
-                case '2':
-                    //down - South
-                    row = map->pc->row + 1;
-                    col = map->pc->col;
+                        }
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
 
-                        movePC(row, col, map);
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
 
-                    }
-                    break;
-                case '1':
-                    //lower left - Southwest
-                    row = map->pc->row + 1;
-                    col = map->pc->col - 1;
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '9':
+                        //upper right - Northeast
+                        row = map->pc->row - 1;
+                        col = map->pc->col + 1;
 
-                        movePC(row, col, map);
+                        if (map->characterTracker[row][col]){
 
-                    }
-                    break;
-                case '4':
-                    //left - West
-                    row = map->pc->row;
-                    col = map->pc->col - 1;
+                            printw("character here");
 
-                    //need to check some stuff
-                    //-can we travel into this terrain type?
-                    //-is there a player there?
+                        }
+                        else{
 
-                    if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+                            printw("no character here");
 
-                        movePC(row, col, map);
+                        }
 
-                    }
-                    break;
-                case '>':
-                    break;
-                case '5':
-                    break;
-                case 't':
-                    break;
-                case KEY_UP:
-                    break;
-                case KEY_DOWN:
-                    break;
-                case 27:
-                    break;
-                case 'Q':
-                    break;
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '6':
+                        //right - East
+                        row = map->pc->row;
+                        col = map->pc->col + 1;
+
+                        if (map->characterTracker[row][col]){
+
+                            printw("character here");
+
+                        }
+                        else{
+
+                            printw("no character here");
+
+                        }
+
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '3':
+                        //lower right - Southeast
+                        row = map->pc->row + 1;
+                        col = map->pc->col + 1;
+
+                        if (map->characterTracker[row][col]){
+
+                            printw("character here");
+
+                        }
+                        else{
+
+                            printw("no character here");
+
+                        }
+
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '2':
+                        //down - South
+                        row = map->pc->row + 1;
+                        col = map->pc->col;
+
+                        if (map->characterTracker[row][col]){
+
+                            printw("character here");
+
+                        }
+                        else{
+
+                            printw("no character here");
+
+                        }
+
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '1':
+                        //lower left - Southwest
+                        row = map->pc->row + 1;
+                        col = map->pc->col - 1;
+
+                        if (map->characterTracker[row][col]){
+
+                            printw("character here");
+
+                        }
+                        else{
+
+                            printw("no character here");
+
+                        }
+
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '4':
+                        //left - West
+                        row = map->pc->row;
+                        col = map->pc->col - 1;
+
+                        if (map->characterTracker[row][col]){
+
+                            printw("character here");
+
+                        }
+                        else{
+
+                            printw("no character here");
+
+                        }
+
+                        //need to check some stuff
+                        //-can we travel into this terrain type?
+                        //-is there a player there?
+
+                        if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
+
+                            movePC(row, col, map);
+                            invalid = 0;
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
+                        moveCost = terrainCostPC(map->terrainOnly[row][col]);
+                        break;
+                    case '>':
+
+                        if (map->terrainOnly[map->pc->row][map->pc->col] == 'M'){
+
+                            clear();
+                            printw("Placeholder for PokeMart\n");
+
+                            char mc;
+
+                            while (true){
+
+                                mc = getch();
+
+                                if (mc != '<'){
+
+                                    printw("Hit '<' to leave the PokeMart\n");
+
+                                }
+                                else{
+
+                                    clear();
+                                    printMap(*map);
+                                    break;
+
+                                }
+
+                            }
+
+                        }
+                        else if (map->terrainOnly[map->pc->row][map->pc->col] == 'C'){
+
+                            clear();
+                            printw("Placeholder for PokeCenter\n");
+
+                            char cc;
+
+                            while (true){
+
+                                cc = getch();
+
+                                if (cc != '<'){
+
+                                    printw("Hit '<' to leave the PokeCenter\n");
+
+                                }
+                                else{
+
+                                    clear();
+                                    printMap(*map);
+                                    break;
 
 
-                default:
-                    printf("entry not recognized");
-                    break;
+                                }
+
+                            }
+
+                        }
+
+                        break;
+                    case '5':
+                        moveCost = 10;
+                        invalid = 0;
+                        break;
+                    case 't':
+                        clear();
+                        printw("NPC Menu:\n");
+                        int pcrow, pccol, nrow, ncol;
+                        pcrow = map->pc->row;
+                        pccol = map->pc->col;
+                        int i;
+                        for (i = 0; i < map->npcCount; i++){
+
+                            nrow = map->npcList[i]->row;
+                            ncol = map->npcList[i]->col;
+
+                            addch(map->npcList[i]->type);
+                            printw(" | ");
+                            printNpcLocation(pcrow, pccol, nrow, ncol);
+
+                        }
+                        char cur;
+                        while (true){
+
+                            cur = getch();
+                            if (cur != 27){
+
+                                printw("Enter escape to return to the game window");
+
+                            }
+                            else{clear(); printMap(*map);break;}
+
+                        }
+                        break;
+                    case KEY_UP:
+                        break;
+                    case KEY_DOWN:
+                        break;
+                    case 27:
+                        printw("escape hit");
+                        break;
+                    case 'q':
+                        return;
+                        break;
+
+
+                    default:
+                        printw("entry not recognized");
+                        break;
+                }
             }
-            current->costOfNextMove = current->costOfNextMove + terrainCostPC(map->terrainOnly[row][col]);
+            
+            // current->costOfNextMove = current->costOfNextMove + terrainCostPC(map->terrainOnly[row][col]);
+            current->costOfNextMove = current->costOfNextMove + moveCost;
             heap_insert(&h, current);
             printMap(*map);
             usleep(250000);
@@ -1567,6 +1801,21 @@ void simulateGame(map_t *map){
 
 
     
+}
+
+void printNpcLocation(int pcrow, int pccol, int row, int col){
+
+    int ns, ew;
+    ns = pcrow - row;
+    ew = pccol - col;
+
+    if (ns <= 0 && ew <= 0){printw("%d south and %d east\n", abs(ns), abs(ew));}
+    else if (ns <= 0 && ew >= 0){printw("%d south and %d west\n", abs(ns), abs(ew));}
+    else if (ns >= 0 && ew <= 0){printw("%d north and %d east\n", abs(ns), abs(ew));}
+    else if (ns >= 0 && ew >= 0){printw("%d north and %d west\n", abs(ns), abs(ew));}
+
+
+
 }
 
 void io_init_terminal(void){
@@ -1582,7 +1831,7 @@ void io_init_terminal(void){
 
 int gateCheck(int r, int c){
 
-    if (r == 0 || r == 79 || c == 0 || c == 20){
+    if (c == 0 || c == 79 || r == 0 || r == 20){
 
         return 0;
 
@@ -1606,6 +1855,11 @@ int terrainCostPC(char c){
 
     }
     else if (c == 'C'){
+
+        return 10;
+
+    }
+    else if (c == 'M'){
 
         return 10;
 
@@ -1784,7 +2038,7 @@ int main(int argc, char *argv[]){
 
     simulateGame(start);
 
-
+    endwin();
 
 
     // findShortestPaths(pc, *start, NPC2);
@@ -1792,7 +2046,7 @@ int main(int argc, char *argv[]){
 
 
     // char c;
-    // char trash;
+    // char trash;q
     // int w = 1;
     // arrE_t currentEntry;
     // while (w != 0){
