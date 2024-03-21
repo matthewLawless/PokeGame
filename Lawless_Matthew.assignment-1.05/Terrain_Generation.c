@@ -697,7 +697,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
-        if (m->screen[nextRow][nextCol] == '@'){
+        if (m->screen[nextRow][nextCol] == '@' && !npc->foughtPC){
 
             fightInterface(npc, m->pc);
             return;
@@ -736,7 +736,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
-        if (m->screen[nextRow][nextCol] == '@'){
+        if (m->screen[nextRow][nextCol] == '@' && !npc->foughtPC){
 
             fightInterface(npc, m->pc);
             return;
@@ -843,7 +843,7 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
-        if (m->screen[nextRow][nextCol] == '@'){
+        if (m->screen[nextRow][nextCol] == '@' && !npc->foughtPC){
 
             fightInterface(npc, m->pc);
             return;
@@ -1463,13 +1463,15 @@ void simulateGame(map_t *map){
             
             arrE_t *currentNextSpot;
             currentNextSpot = malloc(sizeof(arrE_t));
+            currentNextSpot->row = -1;
+            currentNextSpot->col = -1;
             
 
-            if (!current->npc->foughtPC || (current->npc->type != 'h' && current->npc->type != 'r')){
+            if (!current->npc->foughtPC || current->npc->type == 'w' || current->npc->type == 'p' || current->npc->type == 'e'){
 
                 generateMove(map, map->pc, current->npc, currentNextSpot);
 
-                if (!current->npc->foughtPC || (current->npc->type == 'h' && current->npc->type == 'r')){
+                if (!current->npc->foughtPC || currentNextSpot->row != -1){
 
                     currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot->row][currentNextSpot->col]);
 
@@ -1480,6 +1482,7 @@ void simulateGame(map_t *map){
                     heap_insert(&h, current);
 
                 }
+                else{current->costOfNextMove = current->costOfNextMove + 10; heap_insert(&h, current);}
 
             }
 
