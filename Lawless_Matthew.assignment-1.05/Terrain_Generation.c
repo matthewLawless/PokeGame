@@ -22,6 +22,7 @@ void spawnNPC(map_t *m, NPC_t *npc);
 int terrainCostPC(char c);
 int gateCheck(int r, int c);
 void printNpcLocation(int pcrow, int pccol, int row, int col);
+void fightInterface(NPC_t *npc, playerChar_t *pc);
 
 
 // struct Point {
@@ -516,6 +517,15 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         //just want to find the current location of the hiker, then look at all surrounding 
         //squares on the heatmap, then choose the smallest of those squares.
         minDistance = 4000;
+
+            if (m->screen[npc->row - 1][npc->col] == '@' || m->screen[npc->row - 1][npc->col + 1] == '@' || m->screen[npc->row][npc->col + 1] == '@' || m->screen[npc->row + 1][npc->col + 1] == '@'
+                || m->screen[npc->row + 1][npc->col] == '@' || m->screen[npc->row + 1][npc->col - 1] == '@' || m->screen[npc->row][npc->col - 1] == '@' || m->screen[npc->row - 1][npc->col - 1] == '@'){
+
+                    fightInterface(npc, m->pc);
+                    return;
+
+            }
+            
         
             //north
             if (m->screen[npc->row - 1][npc->col] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000 && m->hikerHeatMap[npc->row - 1][npc->col] < minDistance && (m->characterTracker[npc->row - 1][npc->col] == NULL)){
@@ -596,6 +606,14 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
             // printHeatMap(m->rivalHeatMap);
 
             minDistance = 4000;
+
+            if (m->screen[npc->row - 1][npc->col] == '@' || m->screen[npc->row - 1][npc->col + 1] == '@' || m->screen[npc->row][npc->col + 1] == '@' || m->screen[npc->row + 1][npc->col + 1] == '@'
+                || m->screen[npc->row + 1][npc->col] == '@' || m->screen[npc->row + 1][npc->col - 1] == '@' || m->screen[npc->row][npc->col - 1] == '@' || m->screen[npc->row - 1][npc->col - 1] == '@'){
+
+                fightInterface(npc, m->pc);
+                return;
+
+            }
             
             //north
             if (m->screen[npc->row - 1][npc->col] != '@' && terrainCost(*npc, m->terrainOnly[npc->row - 1][npc->col]) < 4000 && m->rivalHeatMap[npc->row - 1][npc->col] < minDistance && (m->characterTracker[npc->row - 1][npc->col] == NULL)){
@@ -679,6 +697,13 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
 
+        if (m->screen[nextRow][nextCol] == '@'){
+
+            fightInterface(npc, m->pc);
+            return;
+
+        }
+
         if (m->screen[nextRow][nextCol] != '@' && terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL && m->terrainOnly[nextRow][nextCol] == m->terrainOnly[npc->row][npc->col]){
 
             
@@ -710,6 +735,13 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
+
+        if (m->screen[nextRow][nextCol] == '@'){
+
+            fightInterface(npc, m->pc);
+            return;
+
+        }
 
         if (m->screen[nextRow][nextCol] != '@' && m->terrainOnly[npc->row][npc->col] == m->terrainOnly[nextRow][nextCol] && m->characterTracker[nextRow][nextCol] == NULL){
 
@@ -810,6 +842,13 @@ void generateMove(map_t *m, playerChar_t *p, NPC_t *npc, arrE_t *arr){
 
         nextRow = rowDifference + npc->row;
         nextCol = colDifference + npc->col;
+
+        if (m->screen[nextRow][nextCol] == '@'){
+
+            fightInterface(npc, m->pc);
+            return;
+
+        }
 
         if (m->screen[nextRow][nextCol] != '@' && terrainCost(*npc, m->terrainOnly[nextRow][nextCol]) < 4000 && m->characterTracker[nextRow][nextCol] == NULL){
 
@@ -1424,20 +1463,33 @@ void simulateGame(map_t *map){
             
             arrE_t *currentNextSpot;
             currentNextSpot = malloc(sizeof(arrE_t));
+            
 
-            generateMove(map, map->pc, current->npc, currentNextSpot);
-            currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot->row][currentNextSpot->col]);
+            if (!current->npc->foughtPC || (current->npc->type != 'h' && current->npc->type != 'r')){
 
-            //actually move there, like update the visuals and map stuff
-            moveGuy(map, current->npc, *currentNextSpot);
+                generateMove(map, map->pc, current->npc, currentNextSpot);
 
-            current->costOfNextMove = current->costOfNextMove + currentCost;
-            heap_insert(&h, current);
+                if (!current->npc->foughtPC || (current->npc->type == 'h' && current->npc->type == 'r')){
+
+                    currentCost = terrainCost(*(current->npc), map->terrainOnly[currentNextSpot->row][currentNextSpot->col]);
+
+                    //actually move there, like update the visuals and map stuff
+                    moveGuy(map, current->npc, *currentNextSpot);
+
+                    current->costOfNextMove = current->costOfNextMove + currentCost;
+                    heap_insert(&h, current);
+
+                }
+
+            }
 
             // printMap(*map);
 
         }
         else{
+
+            clear();
+            printMap(*map);
             //gen a new pc node with + 10 cost just so it takes a turn;
             //IF THE PC MOVES, THEN WE REGEN THE MAPS
 
@@ -1455,16 +1507,12 @@ void simulateGame(map_t *map){
                         row = map->pc->row - 1;
                         col = map->pc->col - 1;
 
-                        // if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                        //     printw("character here");
-
-                        // }
-                        // else{
-
-                        //     printw("no character here");
-
-                        // }
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
+                        }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
 
@@ -1485,15 +1533,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row - 1;
                         col = map->pc->col;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
-
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
                         }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
@@ -1513,15 +1557,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row - 1;
                         col = map->pc->col + 1;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
-
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
                         }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
@@ -1541,15 +1581,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row;
                         col = map->pc->col + 1;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
-
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
                         }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
@@ -1569,15 +1605,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row + 1;
                         col = map->pc->col + 1;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
-
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
                         }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
@@ -1597,15 +1629,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row + 1;
                         col = map->pc->col;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
-
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
                         }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
@@ -1625,15 +1653,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row + 1;
                         col = map->pc->col - 1;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
-
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
                         }
 
                         if (terrainCostPC(map->terrainOnly[row][col]) < 4000 && map->characterTracker[row][col] == NULL && gateCheck(row, col)){
@@ -1653,14 +1677,11 @@ void simulateGame(map_t *map){
                         row = map->pc->row;
                         col = map->pc->col - 1;
 
-                        if (map->characterTracker[row][col]){
+                        if (map->characterTracker[row][col] && !map->characterTracker[row][col]->foughtPC){
 
-                            printw("character here");
-
-                        }
-                        else{
-
-                            printw("no character here");
+                            fightInterface(map->characterTracker[row][col], map->pc);
+                            clear();
+                            printMap(*map);
 
                         }
 
@@ -1737,6 +1758,7 @@ void simulateGame(map_t *map){
                             }
 
                         }
+                        else{printw("It doesn't appear you are at a PokeCenter or PokeMart...\n");}
 
                         break;
                     case '5':
@@ -1750,7 +1772,7 @@ void simulateGame(map_t *map){
                         pcrow = map->pc->row;
                         pccol = map->pc->col;
                         int i;
-                        for (i = 0; i < map->npcCount; i++){
+                        for (i = 0; i < min(map->npcCount, 20); i++){
 
                             nrow = map->npcList[i]->row;
                             ncol = map->npcList[i]->col;
@@ -1761,12 +1783,79 @@ void simulateGame(map_t *map){
 
                         }
                         char cur;
+                        int scroll = 0;
+                        int maxscroll = (map->npcCount / 20);
                         while (true){
 
                             cur = getch();
-                            if (cur != 27){
+                            if (cur != 27 && cur != KEY_DOWN && cur != KEY_UP){
 
                                 printw("Enter escape to return to the game window");
+
+                            }
+                            else if (cur == KEY_DOWN){
+
+
+                                if (scroll + 1 <= maxscroll){
+
+                                    int upperbound;
+                                    scroll++;
+                                    if (scroll == maxscroll){
+
+                                        upperbound = map->npcCount % 20;
+
+                                    }
+                                    else{
+
+                                        upperbound = 20;
+
+                                    }
+
+
+                                    for (i = 0; i < upperbound; i++){
+
+                                        nrow = map->npcList[i]->row;
+                                        ncol = map->npcList[i]->col;
+
+                                        addch(map->npcList[i]->type);
+                                        printw(" | ");
+                                        printNpcLocation(pcrow, pccol, nrow, ncol);
+
+                                    }
+                                }
+                                else{
+
+                                    printw("beginning of list\n");
+
+                                }
+
+                            }
+                            else if (cur == KEY_UP){
+
+                                if (scroll - 1 >= 0){
+
+                                    scroll--;
+
+                                    for (i = 0; i < 20; i++){
+
+                                            nrow = map->npcList[i]->row;
+                                            ncol = map->npcList[i]->col;
+
+                                            addch(map->npcList[i]->type);
+                                            printw(" | ");
+                                            printNpcLocation(pcrow, pccol, nrow, ncol);
+
+                                    }
+
+                                }
+                                else{
+
+
+                                    printw("end of list\n");
+
+
+                                }
+
 
                             }
                             else{clear(); printMap(*map);break;}
@@ -1774,19 +1863,21 @@ void simulateGame(map_t *map){
                         }
                         break;
                     case KEY_UP:
+                        printw("up");
                         break;
                     case KEY_DOWN:
+                        printw("down");
                         break;
                     case 27:
                         printw("escape hit");
                         break;
-                    case 'q':
+                    case 'Q':
                         return;
                         break;
 
 
                     default:
-                        printw("entry not recognized");
+                        printw("entry not recognized\n");
                         break;
                 }
             }
@@ -1794,13 +1885,46 @@ void simulateGame(map_t *map){
             // current->costOfNextMove = current->costOfNextMove + terrainCostPC(map->terrainOnly[row][col]);
             current->costOfNextMove = current->costOfNextMove + moveCost;
             heap_insert(&h, current);
+            //NEW ADDITION
+            findShortestPaths(map->pc, map, &dummyHiker, map);
+            findShortestPaths(map->pc, map, &dummyRival, map);
+            //NEW ADDITION
+            clear();
             printMap(*map);
-            usleep(250000);
+            // usleep(250000);
         }
     }
 
 
     
+}
+
+void fightInterface(NPC_t *npc, playerChar_t *pc){
+
+    clear();
+    printw("placeholder for pokemon battle. press 'esc' to exit\n");
+    char fc;
+
+    while (true){
+
+        fc = getch();
+
+        if (fc != 27){
+
+            printw("please hit 'esc' to exit\n");
+
+        }
+        else{
+
+            break;
+
+        }
+
+
+    }
+
+    npc->foughtPC = 1;
+
 }
 
 void printNpcLocation(int pcrow, int pccol, int row, int col){
