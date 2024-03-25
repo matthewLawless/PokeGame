@@ -1,24 +1,25 @@
 typedef struct NPC{
 
+    
 
-    int row;
-    int col;
+        int row;
+        int col;
 
-    int prow;
-    int pcol;
+        int prow;
+        int pcol;
 
-    char type;
+        char type;
 
-    int Path;
-    int PMart;
-    int PCntr;
-    int TGras;
-    int SGras;
-    int Mtn;
-    int Forest;
+        int Path;
+        int PMart;
+        int PCntr;
+        int TGras;
+        int SGras;
+        int Mtn;
+        int Forest;
 
-    //0 if false, 1 if true
-    int foughtPC;
+        //0 if false, 1 if true
+        int foughtPC;
 
 
 }NPC_t;
@@ -49,6 +50,7 @@ typedef struct Map{
     int npcCount;
     NPC_t *npcList[1000];
     playerChar_t *pc;
+    heap_t *turnQ;
 
 }map_t;
 

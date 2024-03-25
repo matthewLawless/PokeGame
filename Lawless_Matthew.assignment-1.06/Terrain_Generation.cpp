@@ -23,6 +23,7 @@ int terrainCostPC(char c);
 int gateCheck(int r, int c);
 void printNpcLocation(int pcrow, int pccol, int row, int col);
 void fightInterface(NPC_t *npc, playerChar_t *pc);
+map_t * findMapPCMovingInto(map_t *map, world_t *world, int row, int col);
 
 
 // struct Point {
@@ -194,6 +195,7 @@ void initMap(world_t *world, struct Point h){
 
     arrE_t h1;
     initArrE(&h1, h);
+    world->worldMaps[h1.row][h1.col]->turnQ = NULL;
     world->worldMaps[h1.row][h1.col]->worldCoordinates = h;
     world->worldMaps[h1.row][h1.col]->npcCount = 0;
     initScreen(world->worldMaps[h1.row][h1.col]);
@@ -1344,7 +1346,7 @@ void movePC(int row, int col, map_t *map){
 
 };
 
-void simulateGame(map_t *map){
+void simulateGame(map_t *map, world_t *world){
 
     //Need to make some sort of player object that will act as our vector to use the heap
     //Need to make sure that players are init into the characterMap
@@ -1366,35 +1368,70 @@ void simulateGame(map_t *map){
     findShortestPaths(map->pc, map, &dummyHiker, map);
     findShortestPaths(map->pc, map, &dummyRival, map);
 
-    //create heap
     heap_t h;
-    heap_init(&h, costCompare, NULL);
-
-    
-    //first create a heap item for the pc
-    npcNode_t *playerChar;
-    playerChar = (npcNode_t *) malloc(sizeof(npcNode_t));
-    //(for now, just init next move to ten, later this will be variable obviously)
-    initNpcNode(playerChar, 0, NULL, 0);
-    heap_insert(&h, playerChar);
-
-
-    
-
     int currentCost;
-    int i;
-    for (i = 0; i < map->npcCount; i++){
 
-        npcNode_t *currentNPC;
-        currentNPC = (npcNode_t *) malloc(sizeof(npcNode_t));
-        // printNPC(map->npcList[i]);
-        initNpcNode(currentNPC, 0, map->npcList[i], i + 1);
+    if (map->turnQ == NULL){
+        //create heap and assign it to the current map
+        map->turnQ = &h;
+        heap_init(&h, costCompare, NULL);
 
-        // printNpcNode(currentNPC);
+        //first create a heap item for the pc
+        npcNode_t *playerChar;
+        playerChar = (npcNode_t *) malloc(sizeof(npcNode_t));
+        //(for now, just init next move to ten, later this will be variable obviously)
+        initNpcNode(playerChar, 0, NULL, 0);
+        heap_insert(&h, playerChar);
 
-        heap_insert(&h, currentNPC);
+
+        
+
+        
+        int i;
+        for (i = 0; i < map->npcCount; i++){
+
+            npcNode_t *currentNPC;
+            currentNPC = (npcNode_t *) malloc(sizeof(npcNode_t));
+            // printNPC(map->npcList[i]);
+            initNpcNode(currentNPC, 0, map->npcList[i], i + 1);
+
+            // printNpcNode(currentNPC);
+
+            heap_insert(&h, currentNPC);
 
     }
+    }
+    else{
+
+        h = *(map->turnQ);
+
+    }
+
+    
+    // //first create a heap item for the pc
+    // npcNode_t *playerChar;
+    // playerChar = (npcNode_t *) malloc(sizeof(npcNode_t));
+    // //(for now, just init next move to ten, later this will be variable obviously)
+    // initNpcNode(playerChar, 0, NULL, 0);
+    // heap_insert(&h, playerChar);
+
+
+    
+
+    // int currentCost;
+    // int i;
+    // for (i = 0; i < map->npcCount; i++){
+
+    //     npcNode_t *currentNPC;
+    //     currentNPC = (npcNode_t *) malloc(sizeof(npcNode_t));
+    //     // printNPC(map->npcList[i]);
+    //     initNpcNode(currentNPC, 0, map->npcList[i], i + 1);
+
+    //     // printNpcNode(currentNPC);
+
+    //     heap_insert(&h, currentNPC);
+
+    // }
 
     
 
@@ -1523,11 +1560,24 @@ void simulateGame(map_t *map){
                             invalid = 0;
 
                         }
-                        // else{
+                        clear();
+                        printw("before if\n");
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
 
-                        //     printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+                            printw("inside of if\n");
 
-                        // }
+                            printw("before fmpcmi call\n");
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            printw("after fmpcmi call");
+                            simulateGame(s, world);
+                            return;
+
+                        }
+                        else{
+
+                            printw("%d", terrainCostPC(map->terrainOnly[row][col]));
+
+                        }
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         
                         break;
@@ -1920,6 +1970,75 @@ void simulateGame(map_t *map){
     
 }
 
+void prepMapPCMovingInto(map_t *movingTo, map_t *movingFrom){
+
+
+
+
+}
+
+map_t * findMapPCMovingInto(map_t *map, world_t *world, int row, int col){
+
+    //four cases: n, e, s, w
+    arrE_t *currentLoc = (arrE_t *) malloc(sizeof(arrE_t));
+    initArrE(currentLoc, map->worldCoordinates);
+    map_t *curMap;
+
+    //north
+    if (row == 0){
+
+        //make new map point to pc
+        if (world->worldMaps[currentLoc->row - 1][currentLoc->col] == NULL){
+            curMap = world->worldMaps[currentLoc->row - 1][currentLoc->col] = (map_t *) malloc(sizeof(map_t));
+            struct Point p;
+            p.x = map->worldCoordinates.x;
+            p.y = map->worldCoordinates.y + 1;
+            initMap(world, p);
+        }
+        else{
+            curMap = world->worldMaps[currentLoc->row - 1][currentLoc->col];
+        }
+        curMap->pc = map->pc;
+        map->pc = NULL;
+        curMap->pc->row = 19;
+        curMap->pc->col = curMap->sG;
+        return curMap;
+    }
+    //south
+    else if (row == 21){
+        curMap = world->worldMaps[currentLoc->row + 1][currentLoc->col];
+        curMap->pc = map->pc;
+        map->pc = NULL;
+        curMap->pc->row = 1;
+        curMap->pc->col = curMap->nG;
+        return curMap;
+    }
+    //east
+    else if (col = 80){
+        curMap = world->worldMaps[currentLoc->row][currentLoc->col + 1];
+        curMap->pc = map->pc;
+        map->pc = NULL;
+        curMap->pc->row = curMap->wG;
+        curMap->pc->col = 1;
+        return curMap;
+    }
+    //west
+    else if (col == 0){
+
+        curMap = world->worldMaps[currentLoc->row][currentLoc->col - 1];
+        curMap->pc = map->pc;
+        map->pc = NULL;
+        curMap->pc->row = curMap->eG;
+        curMap->pc->col = 78;
+        return curMap;
+
+    }
+
+    return NULL;
+    
+
+}
+
 void fightInterface(NPC_t *npc, playerChar_t *pc){
 
     clear();
@@ -2181,7 +2300,7 @@ int main(int argc, char *argv[]){
     // generateMove(*start, pc, NPC1, &move);
     // printf("%d", move.row);
 
-    simulateGame(start);
+    simulateGame(start, &world);
 
     endwin();
 
