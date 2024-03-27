@@ -1,3 +1,5 @@
+#include "heap.h"
+
 typedef struct NPC{
 
     
@@ -28,6 +30,8 @@ typedef struct playerChar{
 
     int row;
     int col;
+    heap_node_t *heapNode;
+    
 
 }playerChar_t;
 

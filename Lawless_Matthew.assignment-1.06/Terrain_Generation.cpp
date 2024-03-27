@@ -133,13 +133,16 @@ void printMap(map_t map){
     // printf("sG: %d\n", map.sG);
 
     clear();
+    printw("World coordinates:");
+    printPoint(map.worldCoordinates);
+    printw("\n");
     printw("\n");
     dumpBoard(map.screen);
-    printf("World coordinates:");
-    printPoint(map.worldCoordinates);
-    printf("NPCs: ");
-    printf("%d", map.npcCount);
-    printf("\n");
+    // printf("World coordinates:");
+    // printPoint(map.worldCoordinates);
+    // printf("NPCs: ");
+    // printf("%d", map.npcCount);
+    // printf("\n");
 
 
 }
@@ -219,11 +222,11 @@ void initMap(world_t *world, struct Point h){
 
 void printPoint(struct Point p){
 
-    printf("(");
-    printf("%d", p.x);
-    printf(", ");
-    printf("%d", p.y);
-    printf(")\n");
+    printw("(");
+    printw("%d", p.x);
+    printw(", ");
+    printw("%d", p.y);
+    printw(")");
     
 
 }
@@ -1346,7 +1349,7 @@ void movePC(int row, int col, map_t *map){
 
 };
 
-void simulateGame(map_t *map, world_t *world){
+map_t * simulateGame(map_t *map, world_t *world){
 
     //Need to make some sort of player object that will act as our vector to use the heap
     //Need to make sure that players are init into the characterMap
@@ -1403,8 +1406,15 @@ void simulateGame(map_t *map, world_t *world){
     }
     else{
 
+        clear();
         h = *(map->turnQ);
-
+        // printMap(*map);
+        // int curMin = ((npcNode_t *) heap_peek_min(&h))->costOfNextMove;
+        npcNode_t *newPc;
+        newPc = (npcNode_t *) malloc(sizeof(npcNode_t));
+        initNpcNode(newPc, 100000000, NULL, 0);
+        heap_insert(&h, newPc);
+        
     }
 
     
@@ -1437,6 +1447,7 @@ void simulateGame(map_t *map, world_t *world){
 
     npcNode_t *current;
     while ((current = (npcNode_t *) heap_remove_min(&h))){
+        
         
         // printNpcNode(current);
 
@@ -1542,6 +1553,11 @@ void simulateGame(map_t *map, world_t *world){
                 int32_t curMove = getch();
                 switch (curMove){
 
+                    case 'l':
+                        clear();
+                        printw("%d\n", h.size);
+                        
+                        break;
                     case '7':
                         //upper left - Northwest
                         row = map->pc->row - 1;
@@ -1560,18 +1576,13 @@ void simulateGame(map_t *map, world_t *world){
                             invalid = 0;
 
                         }
-                        clear();
-                        printw("before if\n");
+                        
                         if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
 
-                            printw("inside of if\n");
-
-                            printw("before fmpcmi call\n");
                             map_t *s = findMapPCMovingInto(map, world, row, col);
-                            printw("after fmpcmi call");
-                            simulateGame(s, world);
-                            return;
-
+                            // simulateGame(s, world);
+                            // return;
+                            return s;
                         }
                         else{
 
@@ -1598,11 +1609,21 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+
+                            return s;
+                        }
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '9':
@@ -1622,11 +1643,20 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+                            return s;
+                        }
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '6':
@@ -1646,11 +1676,24 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+                            current->costOfNextMove = current->costOfNextMove + 10;
+                            heap_insert(&h, current);
+
+                            map->turnQ = &h;
+                            return s;
+                        }
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '3':
@@ -1670,11 +1713,20 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+                            return s;
+                        }
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '2':
@@ -1694,11 +1746,20 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+                            return s;
+                        }
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '1':
@@ -1718,11 +1779,20 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+                            return s;
+                        }
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '4':
@@ -1747,11 +1817,20 @@ void simulateGame(map_t *map, world_t *world){
                             movePC(row, col, map);
                             invalid = 0;
                         }
+                        
+                        if (!gateCheck(row, col) && ((row == map->eG && col == 79) || (row == map->wG && col == 0) || (col == map->nG && row == 0) || (col == map->sG && row == 20))){
+
+                            map_t *s = findMapPCMovingInto(map, world, row, col);
+                            // simulateGame(s, world);
+                            // return;
+                            return s;
+                        }   
                         else{
 
                             printw("%d", terrainCostPC(map->terrainOnly[row][col]));
 
                         }
+
                         moveCost = terrainCostPC(map->terrainOnly[row][col]);
                         break;
                     case '>':
@@ -1942,7 +2021,7 @@ void simulateGame(map_t *map, world_t *world){
                             break;
                         }
                     case 'Q':
-                        return;
+                        return NULL;
                         break;
 
 
@@ -2005,17 +2084,43 @@ map_t * findMapPCMovingInto(map_t *map, world_t *world, int row, int col){
         return curMap;
     }
     //south
-    else if (row == 21){
-        curMap = world->worldMaps[currentLoc->row + 1][currentLoc->col];
-        curMap->pc = map->pc;
-        map->pc = NULL;
-        curMap->pc->row = 1;
-        curMap->pc->col = curMap->nG;
-        return curMap;
+    else if (row == 20){
+
+        if (world->worldMaps[currentLoc->row + 1][currentLoc->col] == NULL){
+
+            curMap = world->worldMaps[currentLoc->row + 1][currentLoc->col] = (map_t *) malloc(sizeof(map_t));
+            struct Point p;
+            p.x = map->worldCoordinates.x;
+            p.y = map->worldCoordinates.y - 1;
+            initMap(world, p);
+
+        }
+        else{
+
+            curMap = world->worldMaps[currentLoc->row + 1][currentLoc->col];
+
+        }
+            curMap->pc = map->pc;
+            map->pc = NULL;
+            curMap->pc->row = 1;
+            curMap->pc->col = curMap->nG;
+            return curMap;
     }
     //east
-    else if (col = 80){
-        curMap = world->worldMaps[currentLoc->row][currentLoc->col + 1];
+    else if (col == 79){
+
+        if (world->worldMaps[currentLoc->row][currentLoc->col + 1] == NULL){
+
+            curMap = world->worldMaps[currentLoc->row][currentLoc->col + 1] = (map_t *) malloc(sizeof(map_t));
+            struct Point p;
+            p.x = map->worldCoordinates.x + 1;
+            p.y = map->worldCoordinates.y;
+            initMap(world, p);
+        }
+        else{
+            curMap = world->worldMaps[currentLoc->row][currentLoc->col + 1];
+        }
+        
         curMap->pc = map->pc;
         map->pc = NULL;
         curMap->pc->row = curMap->wG;
@@ -2025,7 +2130,22 @@ map_t * findMapPCMovingInto(map_t *map, world_t *world, int row, int col){
     //west
     else if (col == 0){
 
-        curMap = world->worldMaps[currentLoc->row][currentLoc->col - 1];
+        clear();
+
+        if (world->worldMaps[currentLoc->row][currentLoc->col - 1] == NULL){
+
+            curMap = world->worldMaps[currentLoc->row][currentLoc->col - 1] = (map_t *) malloc(sizeof(map_t));
+            struct Point p;
+            p.x = map->worldCoordinates.x - 1;
+            p.y = map->worldCoordinates.y;
+            initMap(world, p);
+
+        }
+        else{
+            curMap = world->worldMaps[currentLoc->row][currentLoc->col - 1];
+        }
+
+        
         curMap->pc = map->pc;
         map->pc = NULL;
         curMap->pc->row = curMap->eG;
@@ -2300,7 +2420,20 @@ int main(int argc, char *argv[]){
     // generateMove(*start, pc, NPC1, &move);
     // printf("%d", move.row);
 
-    simulateGame(start, &world);
+    map_t * currentMap = start;
+    while (true){
+
+        currentMap = simulateGame(currentMap, &world);
+
+        if (currentMap == NULL){
+
+            break;
+
+        }
+
+    }
+
+    // simulateGame(start, &world);
 
     endwin();
 
