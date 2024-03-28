@@ -1,8 +1,10 @@
 #include "heap.h"
 
-typedef struct NPC{
 
-    
+
+class NPC{
+
+    public:
 
         int row;
         int col;
@@ -26,6 +28,16 @@ typedef struct NPC{
 
 }NPC_t;
 
+typedef struct npcNode{
+
+    int costOfNextMove;
+
+    NPC_t *npc;
+
+    int sequenceNumber;
+
+}npcNode_t;
+
 typedef struct playerChar{
 
     int row;
@@ -40,21 +52,24 @@ struct Point{
     int y;
 };
 
-typedef struct Map{
-    int eG;
-    int wG;
-    int nG;
-    int sG;
-    struct Point worldCoordinates;
-    char screen[21][80];
-    char terrainOnly[21][80];
-    NPC_t *characterTracker[21][80];
-    int rivalHeatMap[21][80];
-    int hikerHeatMap[21][80];
-    int npcCount;
-    NPC_t *npcList[1000];
-    playerChar_t *pc;
-    heap_t *turnQ;
+class Map{
+    public:
+        int eG;
+        int wG;
+        int nG;
+        int sG;
+        struct Point worldCoordinates;
+        char screen[21][80];
+        char terrainOnly[21][80];
+        NPC_t *characterTracker[21][80];
+        int rivalHeatMap[21][80];
+        int hikerHeatMap[21][80];
+        int npcCount;
+        NPC_t *npcList[1000];
+        playerChar_t *pc;
+        npcNode_t *heapNodePC;
+        heap_t *turnQ;
+        npcNode_t *heapNodeList[1000];
 
 }map_t;
 
