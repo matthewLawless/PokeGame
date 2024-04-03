@@ -105,7 +105,7 @@ class Pokemon_Move{
             this->level = level;
             this->order = order;
         }
-}
+};
 
 class Pokemon_Species{
 
@@ -174,7 +174,7 @@ class Pokemon_Species{
         this->order = order;
         this->conquest_order = conquest_order;
     }
-}
+};
 
 
 class Experience{
@@ -196,7 +196,7 @@ class Experience{
         this->experience = experience;
 
     }
-}
+};
 
 class Type_Name{
 
@@ -215,7 +215,7 @@ class Type_Name{
         this->name = name;
 
     }
-}
+};
 
 class Pokemon_Stat{
 
@@ -242,7 +242,7 @@ class Pokemon_Stat{
     }
 
 
-}
+};
 
 class Stat{
 
@@ -271,7 +271,7 @@ class Stat{
 
     }
 
-}
+};
 
 class Pokemon_Type{
 
@@ -292,7 +292,7 @@ class Pokemon_Type{
     }
 
 
-}
+};
 
 
 

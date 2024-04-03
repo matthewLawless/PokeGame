@@ -2646,8 +2646,455 @@ void parseMoves(std::vector<Move>& movesList){
 
 }
 
+void parsePokemonMoves(std::vector<Pokemon_Move>& pokemonMovesList){
+
+    std::ifstream myfile;
+    std::stringstream currLine;
+    myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon_moves.csv");
+
+
+
+    std::string myline;
+    std::string currentField;
+    //read first line of file into 'myline'
+    std::getline(myfile, myline);
+    //put the contents of 'myline' into curLine
+    currLine << myline;
+
+    //print the contents of curLine to stdout
+    std::cout << currLine.str() << std::endl;
+
+    //put the first 
+    std::getline(currLine, currentField, ',');
+    std::cout << currentField << std::endl;
+    currLine.str(std::string());
+
+    int pokemon_id;
+    int version_group_id;
+    int move_id;
+    int pokemon_move_method_id;
+    int level;
+    int order;
+
+    while(myfile.peek() != EOF){
+
+        std::stringstream curLine;
+        std::getline(myfile, myline);
+        curLine << myline;
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            pokemon_id = INT_MAX;
+        }
+        else{
+            pokemon_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            version_group_id = INT_MAX;
+        }
+        else{
+            version_group_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            move_id = INT_MAX;
+        }
+        else{
+            move_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            pokemon_move_method_id = INT_MAX;
+        }
+        else{
+            pokemon_move_method_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            level = INT_MAX;
+        }
+        else{
+            level = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            order = INT_MAX;
+        }
+        else{
+            order = stoi(currentField);
+        }
+
+        Pokemon_Move *pm = new Pokemon_Move(pokemon_id, version_group_id, move_id, pokemon_move_method_id, level, order);
+        pokemonMovesList.push_back(*pm);
+
+    }
+
+}
+
+void parsePokemonSpecies(std::vector<Pokemon_Species> pokemonSpeciesList){
+
+    std::ifstream myfile;
+    std::stringstream currLine;
+    myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon_species.csv");
+
+
+
+    std::string myline;
+    std::string currentField;
+    //read first line of file into 'myline'
+    std::getline(myfile, myline);
+    //put the contents of 'myline' into curLine
+    currLine << myline;
+
+    //print the contents of curLine to stdout
+    std::cout << currLine.str() << std::endl;
+
+    //put the first 
+    std::getline(currLine, currentField, ',');
+    std::cout << currentField << std::endl;
+    currLine.str(std::string());
+
+    int id;
+    std::string identifier;
+    int generation_id;
+    int evolves_from_species_id;
+    int evolution_chain_id;
+    int color_id;
+    int shape_id;
+    int habitat_id;
+    int gender_rate;
+    int capture_rate;
+    int base_happiness;
+    int is_baby;
+    int hatch_counter;
+    int has_gender_differences;
+    int growth_rate_id;
+    int forms_switchable;
+    int is_legendary;
+    int is_mythical;
+    int order;
+    int conquest_order;
+
+    while(myfile.peek() != EOF){
+
+        std::stringstream curLine;
+        std::getline(myfile, myline);
+        curLine << myline;
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            id = INT_MAX;
+        }
+        else{
+            id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            identifier = INT_MAX;
+        }
+        else{
+            identifier = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            generation_id = INT_MAX;
+        }
+        else{
+            generation_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            evolves_from_species_id = INT_MAX;
+        }
+        else{
+            evolves_from_species_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            evolution_chain_id = INT_MAX;
+        }
+        else{
+            evolution_chain_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            color_id = INT_MAX;
+        }
+        else{
+            color_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            shape_id = INT_MAX;
+        }
+        else{
+            shape_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            habitat_id = INT_MAX;
+        }
+        else{
+            habitat_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            gender_rate = INT_MAX;
+        }
+        else{
+            gender_rate = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            capture_rate = INT_MAX;
+        }
+        else{
+            capture_rate = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            base_happiness = INT_MAX;
+        }
+        else{
+            base_happiness = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            is_baby = INT_MAX;
+        }
+        else{
+            is_baby = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            hatch_counter = INT_MAX;
+        }
+        else{
+            hatch_counter = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            has_gender_differences = INT_MAX;
+        }
+        else{
+            has_gender_differences = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            growth_rate_id = INT_MAX;
+        }
+        else{
+            growth_rate_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            forms_switchable = INT_MAX;
+        }
+        else{
+            forms_switchable = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            is_legendary = INT_MAX;
+        }
+        else{
+            is_legendary = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            is_mythical = INT_MAX;
+        }
+        else{
+            is_mythical = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            order = INT_MAX;
+        }
+        else{
+            order = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            conquest_order = INT_MAX;
+        }
+        else{
+            conquest_order = stoi(currentField);
+        }
+
+        Pokemon_Species *ps = new Pokemon_Species(id, identifier, generation_id, evolves_from_species_id, evolution_chain_id, color_id, shape_id, habitat_id, gender_rate, capture_rate, base_happiness, is_baby, hatch_counter, has_gender_differences, growth_rate_id, forms_switchable, is_legendary, is_mythical, order, conquest_order);
+        pokemonSpeciesList.push_back(*ps);
+    }
+
+}
+
 
 int main(int argc, char *argv[]){
+
+    std::string input = argv[1];
+    std::cout << input << std::endl;
+    
+    
+
+        if (input == "pokemon"){
+            std::vector<Pokemon> p;
+            parsePokemon(p);
+            for (int i = 0; i < p.size(); i++){
+
+                std::cout << p[i].id << "," << p[i].identifier <<"," << p[i].species_id <<"," << p[i].height <<"," << p[i].weight <<"," << p[i].base_experience <<"," << p[i].order <<"," << p[i].is_default <<std::endl;
+
+            }
+            
+        }
+        else if (input == "moves"){
+    
+            std::vector<Move> m;
+            parseMoves(m);
+            for (int i = 0; i < m.size(); i++){
+
+                std::cout << m[i].id;
+                std::cout << ",";
+                std::cout<< m[i].identifier;
+                std::cout<< ",";
+                std::cout<< m[i].generation_id;
+                std::cout<< ","; 
+                std::cout<< m[i].type_id;
+                std::cout<< ","; 
+                std::cout<< m[i].power;
+                std::cout<< ","; 
+                std::cout<< m[i].pp;
+                std::cout<< ","; 
+                std::cout<< m[i].accuracy;
+                std::cout<< "," ;
+                std::cout<< m[i].priority;
+                std::cout<< "," ;
+                std::cout<< m[i].target_id;
+                std::cout<< "," ;
+                std::cout<< m[i].damage_class_id;
+                std::cout<< "," ;
+                std::cout<< m[i].effect_id;
+                std::cout<< "," ;
+                std::cout<< m[i].effect_chance;
+                std::cout<< "," ;
+                std::cout<< m[i].contest_type_id;
+                std::cout<< "," ;
+                std::cout<< m[i].super_contest_effect_id << std::endl;
+        
+            }
+            
+        }
+        else if (input == "pokemon_moves") {
+        
+            std::vector<Pokemon_Move> pm;
+            parsePokemonMoves(pm);
+            for (int i = 0; i < pm.size(); i++){
+
+                std::cout << pm[i].pokemon_id;
+                std::cout << ",";
+                std::cout << pm[i].version_group_id;
+                std::cout << ",";
+                std::cout << pm[i].move_id;
+                std::cout << ",";
+                std::cout << pm[i].pokemon_move_method_id;
+                std::cout << ",";
+                std::cout << pm[i].level;
+                std::cout << ",";
+                std::cout << pm[i].order;
+                std::cout << std::endl;
+
+            }
+            
+        }
+        else if (input == "pokemon_species") {
+        
+            std::vector<Pokemon_Species> ps;
+            parsePokemonSpecies(ps);
+            for (int i  = 0 ; i < ps.size(); i++){
+
+                std::cout << ps[i].id << std::endl;
+
+            }
+            
+        }
+        else if (input == "experience") {
+        
+
+            
+        }
+        else if (input == "type_names") {
+        
+
+            
+        }
+        else if (input == "pokemon_stats") {
+        
+
+            
+        }
+        else if (input == "stats") {
+        
+
+            
+        }
+        else if (input == "pokemon_types") {
+        
+
+            
+        }
+    
+
+    
 
     // std::vector<Pokemon> poke;
     // parsePokemon(poke);
@@ -2657,10 +3104,10 @@ int main(int argc, char *argv[]){
 
     // }
 
-    std::vector<Move> move;
-    parseMoves(move);
+    // std::vector<Move> move;
+    // parseMoves(move);
 
-    return 0;
+    return 1;
 
     // std::ifstream myfile;
     // std::stringstream curLine;
