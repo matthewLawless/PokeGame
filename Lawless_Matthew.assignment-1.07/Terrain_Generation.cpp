@@ -8,6 +8,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <limits.h>
 #include <sstream>
 #include "Terrain_Generation.h"
 #include <ncurses.h>
@@ -2127,7 +2129,7 @@ Map * simulateGame(Map *map, world_t *world){
         }
     }
 
-
+    return NULL;
     
 }
 
@@ -2371,38 +2373,345 @@ void dummyFunction(Map *map, playerChar_t *player, NPC *npc){
 
 }
 
+void parsePokemon(std::vector<Pokemon>& pokemonList){
+
+    // std::vector<Pokemon> pokemonList;
+
+    std::ifstream myfile;
+    std::stringstream currLine;
+    myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon.csv");
+
+    std::string myline;
+
+    //read first line of file into 'myline'
+    std::getline(myfile, myline);
+    //put the contents of 'myline' into curLine
+    currLine << myline;
+
+    //print the contents of curLine to stdout
+    std::cout << currLine.str() << std::endl;
+
+    std::string currentField;
+
+    //put the first 
+    std::getline(currLine, currentField, ',');
+    std::cout << currentField << std::endl;
+    currLine.str(std::string());
+
+    int id;
+    std::string identifier;
+    int species_id;
+    int height;
+    int weight;
+    int base_experience;
+    int order;
+    int is_default;
+
+    while (myfile.peek() != EOF){
+
+        std::stringstream curLine;
+
+
+        std::getline(myfile, myline);
+        curLine << myline;
+
+        std::cout << myline << std::endl;
+        std::cout << "curline: " << curLine.str() << std::endl;
+
+        // std::cout << curLine.str() << std::endl;
+
+        // std::cout << "\n" << std::endl;
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        id = stoi(currentField);
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        identifier = currentField;
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        species_id = stoi(currentField);
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        height = stoi(currentField);
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        weight = stoi(currentField);
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        base_experience = stoi(currentField);
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        order = stoi(currentField);
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        is_default = stoi(currentField);
+
+        
+        
+        Pokemon *p = new Pokemon(id, identifier, species_id, height, weight, base_experience, order, is_default);
+        pokemonList.push_back(*p);
+    
+        
+    }
+
+    // int n = pokemonList.size();
+    // for (int i = 0; i < n; i++){
+
+    //     std::cout << pokemonList[i].identifier << std::endl;
+
+    // }
+
+    return;
+
+}
+
+void parseMoves(std::vector<Move>& movesList){
+
+    // std::vector<Pokemon> pokemonList;
+
+    std::ifstream myfile;
+    std::stringstream currLine;
+    myfile.open("/share/cs327/pokedex/pokedex/data/csv/moves.csv");
+
+
+
+    std::string myline;
+    std::string currentField;
+    //read first line of file into 'myline'
+    std::getline(myfile, myline);
+    //put the contents of 'myline' into curLine
+    currLine << myline;
+
+    //print the contents of curLine to stdout
+    std::cout << currLine.str() << std::endl;
+
+    //put the first 
+    std::getline(currLine, currentField, ',');
+    std::cout << currentField << std::endl;
+    currLine.str(std::string());
+
+    int id;
+    std::string identifier;
+    int generation_id;
+    int type_id;
+    int power;
+    int pp;
+    int accuracy;
+    int priority;
+    int target_id;
+    int damage_class_id;
+    int effect_id;
+    int effect_chance;
+    int contest_type_id;
+    int super_contest_effect_id;
+
+    while(myfile.peek() != EOF){
+
+        std::stringstream curLine;
+        std::getline(myfile, myline);
+        curLine << myline;
+
+        std::cout << myline << std::endl;
+        std::cout << "curline: " << curLine.str() << std::endl;
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        id = stoi(currentField);
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        identifier = currentField;
+        
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            generation_id = INT_MAX;
+        }
+        else{
+            generation_id = stoi(currentField);
+        }
+        
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            type_id = INT_MAX;
+        }
+        else{
+            type_id = stoi(currentField);
+        }
+        
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            power = INT_MAX;
+        }
+        else{
+            power = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            pp = INT_MAX;
+        }
+        else{
+            pp = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            accuracy = INT_MAX;
+        }
+        else{
+            accuracy = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            priority = INT_MAX;
+        }
+        else{
+            priority = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            target_id = INT_MAX;
+        }
+        else{
+            target_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            damage_class_id = INT_MAX;
+        }
+        else{
+            damage_class_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            effect_id = INT_MAX;
+        }
+        else{
+            effect_id = stoi(currentField);
+        }
+
+        
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            effect_chance = INT_MAX;
+        }
+        else{
+            effect_chance = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            contest_type_id = INT_MAX;
+        }
+        else{
+            contest_type_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
+            super_contest_effect_id = INT_MAX;
+        }
+        else{
+            super_contest_effect_id = stoi(currentField);
+        }
+
+        
+        Move *m = new Move(id, identifier, generation_id, type_id, power, pp, accuracy, priority, target_id, damage_class_id, effect_id, effect_chance, contest_type_id, super_contest_effect_id);
+        movesList.push_back(*m);
+
+
+    }
+
+
+}
+
 
 int main(int argc, char *argv[]){
 
-    std::ifstream myfile;
-    std::stringstream curLine;
-    myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon.csv");
+    // std::vector<Pokemon> poke;
+    // parsePokemon(poke);
+    // for (int i = 0; i < poke.size(); i++){
 
-    // std::ifstream inputFile("/share/cs327/pokedex/pokedex/data/csv/pokemon.csv");
-    std::string myline;
-    std::getline(myfile, myline);
-    curLine << myline;
-    std::cout << curLine.str() << std::endl;
-    std::string currentField;
-    std::getline(curLine, currentField, ',');
-    std::cout << currentField << std::endl;
+    //     std::cout << (poke.at(i)).id << " " << (poke.at(i)).identifier << std::endl; 
+
+    // }
+
+    std::vector<Move> move;
+    parseMoves(move);
+
+    return 0;
+
+    // std::ifstream myfile;
+    // std::stringstream curLine;
+    // myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon.csv");
+
+    // // std::vector<Pokemon> pokemonList;
+
+    // std::string myline;
+
+    // //read first line of file into 'myline'
+    // std::getline(myfile, myline);
+    // //put the contents of 'myline' into curLine
+    // curLine << myline;
+
+    // //print the contents of curLine to stdout
+    // std::cout << curLine.str() << std::endl;
+
+    // std::string currentField;
+
+    // //put the first 
+    // std::getline(curLine, currentField, ',');
+    // std::cout << currentField << std::endl;
 
     // while (myfile.peek() != EOF){
 
-    //     std::getline(myfile, myline, ',');
-    //     if (myline[0] == ('\n')){
+    //     std::getline(myfile, myline);
+    //     curLine << myline;
 
-    //         std::cout << "newline" << std::endl;
-    //         std::cout << myline << std::endl;
-    //         return 1;
+    //     std::cout << curLine.str() << std::endl;
 
-    //     }
-    //     std::cout << myline << std::endl;
-        
+    //     std::cout << "\n" << std::endl;
+
+    //     curLine.str(std::string());
     // }
 
+    // // while (myfile.peek() != EOF){
 
-    return 1;
+    // //     std::getline(myfile, myline, ',');
+    // //     if (myline[0] == ('\n')){
+
+    // //         std::cout << "newline" << std::endl;
+    // //         std::cout << myline << std::endl;
+    // //         return 1;
+
+    // //     }
+    // //     std::cout << myline << std::endl;
+        
+    // // }
+
+
+    // return 1;
 
     io_init_terminal();
 
