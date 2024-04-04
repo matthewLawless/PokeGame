@@ -2380,6 +2380,16 @@ void parsePokemon(std::vector<Pokemon>& pokemonList){
     std::ifstream myfile;
     std::stringstream currLine;
     myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon.csv");
+    //check failure
+    if (myfile.fail()){
+
+        std::string home = std::getenv("HOME");
+        std::string path = "/.poke327/pokedex/pokedex/data/csv/pokemon.csv";
+        // std::string path = "/testT.txt";
+        std::cout << home + path;
+        myfile.open(home + path);
+
+    }
 
     std::string myline;
 
@@ -2395,7 +2405,7 @@ void parsePokemon(std::vector<Pokemon>& pokemonList){
 
     //put the first 
     std::getline(currLine, currentField, ',');
-    std::cout << currentField << std::endl;
+    // std::cout << currentField << std::endl;
     currLine.str(std::string());
 
     int id;
@@ -2473,7 +2483,17 @@ void parseMoves(std::vector<Move>& movesList){
     std::ifstream myfile;
     std::stringstream currLine;
     myfile.open("/share/cs327/pokedex/pokedex/data/csv/moves.csv");
+    //check failure
+    if (myfile.fail()){
 
+        
+        std::string home = std::getenv("HOME");
+        std::string path = "/.poke327/pokedex/pokedex/data/csv/moves.csv";
+        // std::string path = "/testT.txt";
+        std::cout << home + path;
+        myfile.open(home + path);
+
+    }
 
 
     std::string myline;
@@ -2488,7 +2508,7 @@ void parseMoves(std::vector<Move>& movesList){
 
     //put the first 
     std::getline(currLine, currentField, ',');
-    std::cout << currentField << std::endl;
+    // std::cout << currentField << std::endl;
     currLine.str(std::string());
 
     int id;
@@ -2504,6 +2524,7 @@ void parseMoves(std::vector<Move>& movesList){
     int effect_id;
     int effect_chance;
     int contest_type_id;
+    int contest_effect_id;
     int super_contest_effect_id;
 
     while(myfile.peek() != EOF){
@@ -2630,6 +2651,15 @@ void parseMoves(std::vector<Move>& movesList){
         std::getline(curLine, currentField, ',');
         std::cout << currentField << std::endl;
         if (currentField == ""){
+            contest_effect_id = INT_MAX;
+        }
+        else{
+            contest_effect_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        std::cout << currentField << std::endl;
+        if (currentField == ""){
             super_contest_effect_id = INT_MAX;
         }
         else{
@@ -2637,7 +2667,7 @@ void parseMoves(std::vector<Move>& movesList){
         }
 
         
-        Move *m = new Move(id, identifier, generation_id, type_id, power, pp, accuracy, priority, target_id, damage_class_id, effect_id, effect_chance, contest_type_id, super_contest_effect_id);
+        Move *m = new Move(id, identifier, generation_id, type_id, power, pp, accuracy, priority, target_id, damage_class_id, effect_id, effect_chance, contest_type_id, contest_effect_id, super_contest_effect_id);
         movesList.push_back(*m);
 
 
@@ -2652,7 +2682,17 @@ void parsePokemonMoves(std::vector<Pokemon_Move>& pokemonMovesList){
     std::stringstream currLine;
     myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon_moves.csv");
 
+    //check failure
+    if (myfile.fail()){
 
+        
+        std::string home = std::getenv("HOME");
+        std::string path = "/.poke327/pokedex/pokedex/data/csv/pokemon_moves.csv";
+        // std::string path = "/testT.txt";
+        std::cout << home + path;
+        myfile.open(home + path);
+
+    }
 
     std::string myline;
     std::string currentField;
@@ -2666,7 +2706,7 @@ void parsePokemonMoves(std::vector<Pokemon_Move>& pokemonMovesList){
 
     //put the first 
     std::getline(currLine, currentField, ',');
-    std::cout << currentField << std::endl;
+    // std::cout << currentField << std::endl;
     currLine.str(std::string());
 
     int pokemon_id;
@@ -2743,14 +2783,25 @@ void parsePokemonMoves(std::vector<Pokemon_Move>& pokemonMovesList){
 
 }
 
-void parsePokemonSpecies(std::vector<Pokemon_Species> pokemonSpeciesList){
+void parsePokemonSpecies(std::vector<Pokemon_Species>& pokemonSpeciesList){
 
     std::ifstream myfile;
     std::stringstream currLine;
     myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon_species.csv");
 
+    //check failure
+    if (myfile.fail()){
 
+        
+        std::string home = std::getenv("HOME");
+        std::string path = "/.poke327/pokedex/pokedex/data/csv/pokemon_species.csv";
+        // std::string path = "/testT.txt";
+        std::cout << home + path;
+        myfile.open(home + path);
 
+    }
+
+    
     std::string myline;
     std::string currentField;
     //read first line of file into 'myline'
@@ -2763,7 +2814,7 @@ void parsePokemonSpecies(std::vector<Pokemon_Species> pokemonSpeciesList){
 
     //put the first 
     std::getline(currLine, currentField, ',');
-    std::cout << currentField << std::endl;
+    // std::cout << currentField << std::endl;
     currLine.str(std::string());
 
     int id;
@@ -2808,7 +2859,7 @@ void parsePokemonSpecies(std::vector<Pokemon_Species> pokemonSpeciesList){
             identifier = INT_MAX;
         }
         else{
-            identifier = stoi(currentField);
+            identifier = currentField;
         }
 
         std::getline(curLine, currentField, ',');
@@ -2979,6 +3030,443 @@ void parsePokemonSpecies(std::vector<Pokemon_Species> pokemonSpeciesList){
 
 }
 
+void parseExperience(std::vector<Experience>& experienceList){
+
+    std::ifstream myfile;
+    std::stringstream currLine;
+    myfile.open("/share/cs327/pokedex/pokedex/data/csv/experience.csv");
+
+    //check failure
+    if (myfile.fail()){
+
+        
+        std::string home = std::getenv("HOME");
+        std::string path = "/.poke327/pokedex/pokedex/data/csv/experience.csv";
+        // std::string path = "/testT.txt";
+        std::cout << home + path;
+        myfile.open(home + path);
+
+    }
+    
+    std::string myline;
+    std::string currentField;
+    //read first line of file into 'myline'
+    std::getline(myfile, myline);
+    //put the contents of 'myline' into curLine
+    currLine << myline;
+
+    //print the contents of curLine to stdout
+    std::cout << currLine.str() << std::endl;
+
+    //put the first 
+    std::getline(currLine, currentField, ',');
+    // std::cout << currentField << std::endl;
+    currLine.str(std::string());
+
+    int growth_rate_id;
+    int level;
+    int experience;
+
+    while(myfile.peek() != EOF){
+
+        std::stringstream curLine;
+        std::getline(myfile, myline);
+        curLine << myline;
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            growth_rate_id = INT_MAX;
+        }
+        else{
+            growth_rate_id = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            level = INT_MAX;
+        }
+        else{
+            level = stoi(currentField);
+        }
+
+        std::getline(curLine, currentField, ',');
+        // std::cout << currentField << std::endl;
+        if (currentField == ""){
+            experience = INT_MAX;
+        }
+        else{
+            experience = stoi(currentField);
+        }
+
+        Experience *e = new Experience(growth_rate_id, level, experience);
+        experienceList.push_back(*e);
+    }
+
+}
+
+void parseTypeNames(std::vector<Type_Name>& typeNameList){
+
+            std::ifstream myfile;
+            std::stringstream currLine;
+            myfile.open("/share/cs327/pokedex/pokedex/data/csv/type_names.csv");
+
+            //check failure
+            if (myfile.fail()){
+
+        
+                std::string home = std::getenv("HOME");
+                std::string path = "/.poke327/pokedex/pokedex/data/csv/type_names.csv";
+                // std::string path = "/testT.txt";
+                std::cout << home + path;
+                myfile.open(home + path);
+
+            }
+            
+            std::string myline;
+            std::string currentField;
+            //read first line of file into 'myline'
+            std::getline(myfile, myline);
+            //put the contents of 'myline' into curLine
+            currLine << myline;
+
+            //print the contents of curLine to stdout
+            std::cout << currLine.str() << std::endl;
+
+            //put the first 
+            std::getline(currLine, currentField, ',');
+            // std::cout << currentField << std::endl;
+            currLine.str(std::string());
+
+            int type_id;
+            int local_language_id;
+            std::string name;
+
+            while(myfile.peek() != EOF){
+
+                std::stringstream curLine;
+                std::getline(myfile, myline);
+                curLine << myline;
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    type_id = INT_MAX;
+                }
+                else{
+                    type_id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    local_language_id = INT_MAX;
+                }
+                else{
+                    local_language_id = stoi(currentField);
+                }
+
+                if (local_language_id == 9){
+
+                    std::getline(curLine, currentField, ',');
+                    // std::cout << currentField << std::endl;
+                    if (currentField == ""){
+                        name = INT_MAX;
+                    }
+                    else{
+                        name = currentField;
+                    }
+
+                    Type_Name *tn = new Type_Name(type_id, local_language_id, name);
+                    typeNameList.push_back(*tn);
+
+                }
+
+            }
+
+
+}
+
+void parsePokemonStats(std::vector<Pokemon_Stat>& pokemonStatsList){
+
+            std::ifstream myfile;
+            std::stringstream currLine;
+            myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon_stats.csv");
+
+            //check failure
+            if (myfile.fail()){
+
+        
+                std::string home = std::getenv("HOME");
+                std::string path = "/.poke327/pokedex/pokedex/data/csv/pokemon_stats.csv";
+                // std::string path = "/testT.txt";
+                std::cout << home + path;
+                myfile.open(home + path);
+
+            }
+            
+            std::string myline;
+            std::string currentField;
+            //read first line of file into 'myline'
+            std::getline(myfile, myline);
+            //put the contents of 'myline' into curLine
+            currLine << myline;
+
+            //print the contents of curLine to stdout
+            std::cout << currLine.str() << std::endl;
+
+            //put the first 
+            std::getline(currLine, currentField, ',');
+            // std::cout << currentField << std::endl;
+            currLine.str(std::string());
+
+            int pokemon_id;
+            int stat_id;
+            int base_stat;
+            int effort;
+
+             while(myfile.peek() != EOF){
+
+                std::stringstream curLine;
+                std::getline(myfile, myline);
+                curLine << myline;
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    pokemon_id = INT_MAX;
+                }
+                else{
+                    pokemon_id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    stat_id = INT_MAX;
+                }
+                else{
+                    stat_id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    base_stat = INT_MAX;
+                }
+                else{
+                    base_stat = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    effort = INT_MAX;
+                }
+                else{
+                    effort = stoi(currentField);
+                }
+
+
+                Pokemon_Stat *ps = new Pokemon_Stat(pokemon_id, stat_id, base_stat, effort);
+                pokemonStatsList.push_back(*ps);
+
+             }
+
+}
+
+void parseStats(std::vector<Stat>& statList){
+
+            std::ifstream myfile;
+            std::stringstream currLine;
+            myfile.open("/share/cs327/pokedex/pokedex/data/csv/stats.csv");
+
+            //check failure
+            if (myfile.fail()){
+
+        
+                std::string home = std::getenv("HOME");
+                std::string path = "/.poke327/pokedex/pokedex/data/csv/stats.csv";
+                // std::string path = "/testT.txt";
+                std::cout << home + path;
+                myfile.open(home + path);
+
+            }
+            
+            std::string myline;
+            std::string currentField;
+            //read first line of file into 'myline'
+            std::getline(myfile, myline);
+            //put the contents of 'myline' into curLine
+            currLine << myline;
+
+            //print the contents of curLine to stdout
+            std::cout << currLine.str() << std::endl;
+
+            //put the first 
+            std::getline(currLine, currentField, ',');
+            // std::cout << currentField << std::endl;
+            currLine.str(std::string());
+
+            int id;
+            int damage_class_id;
+            std::string identifier;
+            int is_battle_only;
+            int game_index;
+
+            while(myfile.peek() != EOF){
+
+                std::stringstream curLine;
+                std::getline(myfile, myline);
+                curLine << myline;
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    id = INT_MAX;
+                }
+                else{
+                    id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    damage_class_id = INT_MAX;
+                }
+                else{
+                    damage_class_id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    identifier = INT_MAX;
+                }
+                else{
+                    identifier = (currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    is_battle_only = INT_MAX;
+                }
+                else{
+                    is_battle_only = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    game_index = INT_MAX;
+                }
+                else{
+                    game_index = stoi(currentField);
+                }
+
+                Stat *s = new Stat(id, damage_class_id, identifier, is_battle_only, game_index);
+                statList.push_back(*s);
+
+            }
+
+}
+
+void parsePokemonTypes(std::vector<Pokemon_Type>& pokemonTypes){
+
+            std::ifstream myfile;
+            std::stringstream currLine;
+            myfile.open("/share/cs327/pokedex/pokedex/data/csv/pokemon_types.csv");
+
+            //check failure
+            if (myfile.fail()){
+
+        
+                std::string home = std::getenv("HOME");
+                std::string path = "/.poke327/pokedex/pokedex/data/csv/pokemon_types.csv";
+                // std::string path = "/testT.txt";
+                std::cout << home + path;
+                myfile.open(home + path);
+
+            }
+            
+            std::string myline;
+            std::string currentField;
+            //read first line of file into 'myline'
+            std::getline(myfile, myline);
+            //put the contents of 'myline' into curLine
+            currLine << myline;
+
+            //print the contents of curLine to stdout
+            std::cout << currLine.str() << std::endl;
+
+            //put the first 
+            std::getline(currLine, currentField, ',');
+            // std::cout << currentField << std::endl;
+            currLine.str(std::string());
+
+            int pokemon_id;
+            int type_id;
+            int slot;
+
+            while(myfile.peek() != EOF){
+
+                std::stringstream curLine;
+                std::getline(myfile, myline);
+                curLine << myline;
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    pokemon_id = INT_MAX;
+                }
+                else{
+                    pokemon_id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    type_id = INT_MAX;
+                }
+                else{
+                    type_id = stoi(currentField);
+                }
+
+                std::getline(curLine, currentField, ',');
+                // std::cout << currentField << std::endl;
+                if (currentField == ""){
+                    slot = INT_MAX;
+                }
+                else{
+                    slot = stoi(currentField);
+                }
+
+                Pokemon_Type *pt = new Pokemon_Type(pokemon_id, type_id, slot);
+                pokemonTypes.push_back(*pt);
+
+            }
+
+
+
+
+}
+
+void maxCheck(int i){
+
+    if (i == INT_MAX){
+
+        std::cout << "";
+
+    }
+    else{
+
+        std::cout << i;
+
+    }
+
+}
 
 int main(int argc, char *argv[]){
 
@@ -3003,33 +3491,49 @@ int main(int argc, char *argv[]){
             parseMoves(m);
             for (int i = 0; i < m.size(); i++){
 
-                std::cout << m[i].id;
+                // std::cout << m[i].id;
+                maxCheck(m[i].id);
                 std::cout << ",";
                 std::cout<< m[i].identifier;
                 std::cout<< ",";
-                std::cout<< m[i].generation_id;
+                // std::cout<< m[i].generation_id;
+                maxCheck(m[i].generation_id);
                 std::cout<< ","; 
-                std::cout<< m[i].type_id;
+                // std::cout<< m[i].type_id;
+                maxCheck(m[i].type_id);
                 std::cout<< ","; 
-                std::cout<< m[i].power;
+                // std::cout<< m[i].power;
+                maxCheck(m[i].power);
                 std::cout<< ","; 
-                std::cout<< m[i].pp;
+                // std::cout<< m[i].pp;
+                maxCheck(m[i].pp);
                 std::cout<< ","; 
-                std::cout<< m[i].accuracy;
+                // std::cout<< m[i].accuracy;
+                maxCheck(m[i].accuracy);
                 std::cout<< "," ;
-                std::cout<< m[i].priority;
+                // std::cout<< m[i].priority;
+                maxCheck(m[i].priority);
                 std::cout<< "," ;
-                std::cout<< m[i].target_id;
+                // std::cout<< m[i].target_id;
+                maxCheck(m[i].target_id);
                 std::cout<< "," ;
-                std::cout<< m[i].damage_class_id;
+                // std::cout<< m[i].damage_class_id;
+                maxCheck(m[i].damage_class_id);
                 std::cout<< "," ;
-                std::cout<< m[i].effect_id;
+                // std::cout<< m[i].effect_id;
+                maxCheck(m[i].effect_id);
                 std::cout<< "," ;
-                std::cout<< m[i].effect_chance;
+                // std::cout<< m[i].effect_chance;
+                maxCheck(m[i].effect_chance);
                 std::cout<< "," ;
-                std::cout<< m[i].contest_type_id;
+                // std::cout<< m[i].contest_type_id;
+                maxCheck(m[i].contest_type_id);
                 std::cout<< "," ;
-                std::cout<< m[i].super_contest_effect_id << std::endl;
+                maxCheck(m[i].contest_effect_id);
+                std::cout<< "," ;
+                // std::cout<< m[i].super_contest_effect_id << std::endl;
+                maxCheck(m[i].super_contest_effect_id);
+                std::cout << std::endl;
         
             }
             
@@ -3040,17 +3544,23 @@ int main(int argc, char *argv[]){
             parsePokemonMoves(pm);
             for (int i = 0; i < pm.size(); i++){
 
-                std::cout << pm[i].pokemon_id;
+                // std::cout << pm[i].pokemon_id;
+                maxCheck(pm[i].pokemon_id);
                 std::cout << ",";
-                std::cout << pm[i].version_group_id;
+                // std::cout << pm[i].version_group_id;
+                maxCheck(pm[i].version_group_id);
                 std::cout << ",";
-                std::cout << pm[i].move_id;
+                // std::cout << pm[i].move_id;
+                maxCheck(pm[i].move_id);
                 std::cout << ",";
-                std::cout << pm[i].pokemon_move_method_id;
+                // std::cout << pm[i].pokemon_move_method_id;
+                maxCheck(pm[i].pokemon_move_method_id);
                 std::cout << ",";
-                std::cout << pm[i].level;
+                // std::cout << pm[i].level;
+                maxCheck(pm[i].level);
                 std::cout << ",";
-                std::cout << pm[i].order;
+                // std::cout << pm[i].order;
+                maxCheck(pm[i].order);
                 std::cout << std::endl;
 
             }
@@ -3060,36 +3570,279 @@ int main(int argc, char *argv[]){
         
             std::vector<Pokemon_Species> ps;
             parsePokemonSpecies(ps);
-            for (int i  = 0 ; i < ps.size(); i++){
+            std::cout << ps.size() << std::endl;
+            for (int i = 0 ; i < ps.size(); i++){
 
-                std::cout << ps[i].id << std::endl;
+                if (ps[i].id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].id;
+                }
+                // std::cout << ps[i].id;
+
+                std::cout << ",";
+                std::cout << ps[i].identifier;
+                std::cout << ",";
+                if (ps[i].generation_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].generation_id;
+                }
+                // std::cout << ps[i].generation_id;
+
+                std::cout << ",";
+                if (ps[i].evolves_from_species_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].evolves_from_species_id;
+                }
+                // std::cout << ps[i].evolves_from_species_id;
+                std::cout << ",";
+                if (ps[i].evolution_chain_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].evolution_chain_id;
+                }
+                // std::cout << ps[i].evolution_chain_id;
+
+                std::cout << ",";
+                if (ps[i].color_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].color_id;
+                }
+                // std::cout << ps[i].color_id;
+                std::cout << ",";
+
+                if (ps[i].shape_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].shape_id;
+                }
+                // std::cout << ps[i].shape_id;
+                std::cout << ",";
+
+                if (ps[i].habitat_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].habitat_id;
+                }
+                // std::cout << ps[i].habitat_id;
+                std::cout << ",";
+
+                if (ps[i].gender_rate == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].gender_rate;
+                }
+                // std::cout << ps[i].gender_rate;
+                std::cout << ",";
+
+                if (ps[i].capture_rate == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].capture_rate;
+                }
+                // std::cout << ps[i].capture_rate;
+                std::cout << ",";
+
+                if (ps[i].base_happiness == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].base_happiness;
+                }
+                // std::cout << ps[i].base_happiness;
+                std::cout << ",";
+
+                if (ps[i].is_baby == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].is_baby;
+                }
+                // std::cout << ps[i].is_baby;
+                std::cout << ",";
+
+                if (ps[i].hatch_counter == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].hatch_counter;
+                }
+                // std::cout << ps[i].hatch_counter;
+                std::cout << ",";
+
+                if (ps[i].has_gender_differences == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].has_gender_differences;
+                }
+                // std::cout << ps[i].has_gender_differences;
+                std::cout << ",";
+
+                if (ps[i].growth_rate_id == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].growth_rate_id;
+                }
+                // std::cout << ps[i].growth_rate_id;
+                std::cout << ",";
+
+                if (ps[i].forms_switchable == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].forms_switchable;
+                }
+                // std::cout << ps[i].forms_switchable;
+                std::cout << ",";
+
+                if (ps[i].is_legendary == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].is_legendary;
+                }
+                // std::cout << ps[i].is_legendary;
+                std::cout << ",";
+
+                if (ps[i].is_mythical == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].is_mythical;
+                }
+                // std::cout << ps[i].is_mythical;
+                std::cout << ",";
+
+                if (ps[i].order == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].order;
+                }
+                // std::cout << ps[i].order;
+                std::cout << ",";
+
+                if (ps[i].conquest_order == INT_MAX){
+                    std::cout << "";
+                }
+                else{
+                    std::cout << ps[i].conquest_order;
+                }
+                // std::cout << ps[i].conquest_order;
+                std::cout << std::endl;
 
             }
             
         }
         else if (input == "experience") {
         
+            std::vector<Experience> e;
+            parseExperience(e);
+            for (int i = 0; i < e.size(); i++){
 
+                std::cout << e[i].growth_rate_id;
+                std::cout << ",";
+                std::cout << e[i].level;
+                std::cout << ",";
+                std::cout << e[i].experience;
+                std::cout << std::endl;
+
+            }
             
         }
         else if (input == "type_names") {
         
+            std::vector<Type_Name> tn;
+            parseTypeNames(tn);
+            for (int i = 0; i < tn.size(); i++){
 
+                std::cout << tn[i].type_id;
+                std::cout << ",";
+                std::cout << tn[i].local_language_id;
+                std::cout << ",";
+                std::cout << tn[i].name;
+                std::cout << std::endl;
+
+
+            }
             
         }
         else if (input == "pokemon_stats") {
         
+            std::vector<Pokemon_Stat> ps;
+            parsePokemonStats(ps);
+            for (int i  = 0; i < ps.size(); i++){
 
+                // std::cout << ps[i].pokemon_id;
+                maxCheck(ps[i].pokemon_id);
+                std::cout << ",";
+                // std::cout << ps[i].stat_id;
+                maxCheck(ps[i].stat_id);
+                std::cout << ",";
+                // std::cout << ps[i].base_stat;
+                maxCheck(ps[i].base_stat);
+                std::cout << ",";
+                // std::cout << ps[i].effort;
+                maxCheck(ps[i].effort);
+                std::cout << std::endl;
+
+            }
             
         }
         else if (input == "stats") {
         
+            std::vector<Stat> s;
+            parseStats(s);
+            for (int i = 0; i < s.size(); i++){
 
+                // std::cout << s[i].id;
+                maxCheck(s[i].id);
+                std::cout << ",";
+                // std::cout << s[i].damage_class_id;
+                maxCheck(s[i].damage_class_id);
+                std::cout << ",";
+                std::cout << s[i].identifier;
+                
+                std::cout << ",";
+                // std::cout << s[i].is_battle_only;
+                maxCheck(s[i].is_battle_only);
+                std::cout << ",";
+                // std::cout << s[i].game_index;
+                maxCheck(s[i].game_index);
+                std::cout << std::endl;
+
+            }
             
         }
         else if (input == "pokemon_types") {
         
+            std::vector<Pokemon_Type> pt;
+            parsePokemonTypes(pt);
+            for (int i = 0; i < pt.size(); i++){
 
+                std::cout << pt[i].pokemon_id;
+                std::cout << ",";
+                std::cout << pt[i].type_id;
+                std::cout << ",";
+                std::cout << pt[i].slot;
+                std::cout << std::endl;
+
+            }
+            
             
         }
     

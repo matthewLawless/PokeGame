@@ -1,1 +1,4 @@
-Implemented everything in the canonical way. Changed map and npc structs to classes as required. Implemented the fly command but you must hit enter after entering each coordinate. PC can travel through to the different maps, the turn queue is preserved through the traveling to and from different maps, as well as when using fly. Everything should work. USE THE NUMBERS FOR MOVEMENT, IF THE KEYPAD DOESNT WORK, USE THE ROW OF NUMBERS. I don't know why that happens, it might be my keyboard.
+Everything should work fine. I used two ifstreams, one to get each line from the file, and one
+to parse the individual lines with a comma as the delimiter. I used the same approach for everything
+one of the files. Just make a corresponding object, read the fields in and then add it to a vector.
+Everything should work great. I only parse the english names for type_names.csv. 

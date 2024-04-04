@@ -1,3 +1,27 @@
+commit b00e4044b9047f210190d84c71f07eb90ff5c05c
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Wed Apr 3 17:29:49 2024 -0500
+
+    Almost finished with moves and species
+    
+    Made all of the classes and have moves and species working. I need to go back and make it so that we print "" instead of the value of intMAX though.
+
+commit 63979fa1724a5f83d137d292b0e20b17cd3af9e4
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Tue Apr 2 23:27:09 2024 -0500
+
+    Finished first two files
+    
+    Wrote the parsers for the first two files to where everything prints correct. Also created all of the classes for the other types, just need to write the parsers for the other types.
+
+commit 4b956c915a9a85ce49fe5d06167a855f3cd4b417
+Author: matthewLawless <mjlawless04@gmail.com>
+Date:   Mon Apr 1 22:30:04 2024 -0500
+
+    Started assignment 7
+    
+    Renamed assignment 6 file to assignment 7. Started to mess around with the io and figured out the strategy I'm going to use. Shouldn't take much longer to be honest if everything goes to plan.
+
 commit 3c413c373697de7df917b3e19c9d424552cad3ff
 Author: matthewLawless <mjlawless04@gmail.com>
 Date:   Wed Mar 27 19:54:50 2024 -0500

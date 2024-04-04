@@ -43,6 +43,7 @@ class Move{
         int effect_id;
         int effect_chance;
         int contest_type_id;
+        int contest_effect_id;
         int super_contest_effect_id;
 
     Move(int id,
@@ -58,6 +59,7 @@ class Move{
         int effect_id,
         int effect_chance,
         int contest_type_id,
+        int contest_effect_id,
         int super_contest_effect_id){
 
             this->id = id;
@@ -73,6 +75,7 @@ class Move{
             this->effect_id = effect_id;
             this->effect_chance = effect_chance;
             this->contest_type_id = contest_type_id;
+            this->contest_effect_id = contest_effect_id;
             this->super_contest_effect_id = super_contest_effect_id;
 
 
@@ -179,117 +182,122 @@ class Pokemon_Species{
 
 class Experience{
 
-    int growth_rate_id;
-    int level;
-    int experience;
+    public:
+        int growth_rate_id;
+        int level;
+        int experience;
 
-    Experience(
+        Experience(
 
-        int growth_rate_id,
-        int level,
-        int experience
+            int growth_rate_id,
+            int level,
+            int experience
 
-    ){
+        ){
 
-        this->growth_rate_id = growth_rate_id;
-        this->level = level;
-        this->experience = experience;
+            this->growth_rate_id = growth_rate_id;
+            this->level = level;
+            this->experience = experience;
 
-    }
+        }
 };
 
 class Type_Name{
 
-    int type_id;
-    int local_language_id;
-    int name;
+    public:
+        int type_id;
+        int local_language_id;
+        std::string name;
 
-    Type_Name(
-        int type_id,
-        int local_language_id,
-        int name
-    ){
+        Type_Name(
+            int type_id,
+            int local_language_id,
+            std::string name
+        ){
 
-        this->type_id = type_id;
-        this->local_language_id = local_language_id;
-        this->name = name;
+            this->type_id = type_id;
+            this->local_language_id = local_language_id;
+            this->name = name;
 
-    }
+        }
 };
 
 class Pokemon_Stat{
 
-    int pokemon_id;
-    int stat_id;
-    int base_stat;
-    int effort;
+    public:
+        int pokemon_id;
+        int stat_id;
+        int base_stat;
+        int effort;
 
-    Pokemon_Stat(
+        Pokemon_Stat(
 
-        int pokemon_id,
-        int stat_id,
-        int base_stat,
-        int effort
+            int pokemon_id,
+            int stat_id,
+            int base_stat,
+            int effort
 
-    ){
+        ){
 
-        this->pokemon_id = pokemon_id;
-        this->stat_id = stat_id;
-        this->base_stat = base_stat;
-        this->effort = effort;
+            this->pokemon_id = pokemon_id;
+            this->stat_id = stat_id;
+            this->base_stat = base_stat;
+            this->effort = effort;
 
 
-    }
+        }
 
 
 };
 
 class Stat{
 
-    int id;
-    int damage_class_id;
-    std::string identifier;
-    int is_battle_only;
-    int game_index;
+    public:
+        int id;
+        int damage_class_id;
+        std::string identifier;
+        int is_battle_only;
+        int game_index;
 
-    Stat(
+        Stat(
 
-        int id,
-        int damage_class_id,
-        std::string identifier,
-        int is_battle_only,
-        int game_index
+            int id,
+            int damage_class_id,
+            std::string identifier,
+            int is_battle_only,
+            int game_index
 
-    ){
+        ){
 
-        this->id = id;
-        this->damage_class_id = damage_class_id;
-        this->identifier = identifier;
-        this->is_battle_only = is_battle_only;
-        this->game_index = game_index;
+            this->id = id;
+            this->damage_class_id = damage_class_id;
+            this->identifier = identifier;
+            this->is_battle_only = is_battle_only;
+            this->game_index = game_index;
 
 
-    }
+        }
 
 };
 
 class Pokemon_Type{
 
-    int pokemon_id;
-    int type_id;
-    int slot;
+    public:
+        int pokemon_id;
+        int type_id;
+        int slot;
 
-    Pokemon_Type(
+        Pokemon_Type(
 
-        int pokemon_id,
-        int type_id,
-        int slot
+            int pokemon_id,
+            int type_id,
+            int slot
 
-    ){
-        this->pokemon_id = pokemon_id;
-        this->type_id = type_id;
-        this->slot = slot;
-    }
+        ){
+            this->pokemon_id = pokemon_id;
+            this->type_id = type_id;
+            this->slot = slot;
+        }
 
 
 };
