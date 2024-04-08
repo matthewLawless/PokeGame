@@ -1,0 +1,4 @@
+Everything should work fine. I used two ifstreams, one to get each line from the file, and one
+to parse the individual lines with a comma as the delimiter. I used the same approach for everything
+one of the files. Just make a corresponding object, read the fields in and then add it to a vector.
+Everything should work great. I only parse the english names for type_names.csv. 
