@@ -38,7 +38,7 @@ std::vector<Pokemon_Move> pm;
 std::vector<Pokemon_Species> ps;
 std::vector<Experience> e;
 std::vector<Type_Name> tn;
-std::vector<Pokemon_Stat> ps;
+std::vector<Pokemon_Stat> pst;
 std::vector<Stat> s;
 std::vector<Pokemon_Type> pt;
 
@@ -2213,7 +2213,7 @@ void pokemonEncounter(Map *map){
     printw("here");
 
     //choose which pokemon we will encounter (x ~ uniform);
-    int p = (rand() % 1092) + 1;
+    int pk = (rand() % 1092) + 1;
     printw("here");
     //we will have an array of length 1092 that has all of the pokemon, just take arr[x]
     //to get the pokemon
@@ -2237,11 +2237,83 @@ void pokemonEncounter(Map *map){
 
     }
 
+    //now to find the possible moves
+    std::vector<Pokemon_Move> possibleMoves;
+    std::vector<Pokemon_Move> movesWithLevel;
+    //we need to find our pokemon specie id, then go through the list of pokemon_moves and find
+    //pokemon_moves that have their pokemon_id equal to our pokemon species id
+    int speciesId = p[pk].species_id;
+
+    for (int i = 0; i < pm.size(); i++){
+
+        if (pm[i].pokemon_id == speciesId && pm[i].pokemon_move_method_id == 1){
+
+            possibleMoves.push_back(pm[i]);
+
+        }
+
+
+    }
+
+    for (int i = 0; i < possibleMoves.size(); i++){
+
+        if (possibleMoves[i].level < l){
+            movesWithLevel.push_back(possibleMoves[i]);
+        }
+
+    }
+
+    int move1;
+    int move2;
+    if (movesWithLevel.size() > 1){
+        move1 = (rand() % movesWithLevel.size());
+        while (move2 != move1){
+
+            move2 = (rand() % movesWithLevel.size());
+
+        }
+    }
+    else if (movesWithLevel.size() == 1){
+        move1 = 0;
+        move2 = NULL;
+    }
+    else{
+        while (movesWithLevel.size() < 1){
+            l++;
+            for (int i = 0; i < possibleMoves.size(); i++){
+                if (possibleMoves[i].level < l){
+                    movesWithLevel.push_back(possibleMoves[i]);
+                }
+            }
+        }
+    }
+
+    //gen additive values to be added to IVS, x ~ [0, 15]
+    int hp = rand() % 15;
+    int attack = rand() % 15;
+    int defense = rand() % 15;
+    int speed = rand() % 15;
+    int specialAttack = rand() % 15;
+    int specialDefense = rand() % 15;
+
+
+
+
+
     clear();
     printw("Current Encounter:\n");
-    printw("Pokemon: %d\n", p);
+    printw("Pokemon: %d\n", pk);
     printw("Pokemon Level: %d\n", l);
     printw("Manhattan Distance: %d\n", mdistance);
+    // for (int i = 0; i < possibleMoves.size(); i++){
+
+    //     printw("%d\n", possibleMoves[i].move_id);
+
+    // }
+    printw("possibleMove.size() = %d\n", possibleMoves.size());
+    printw("movesWithLevel.size() = %d\n", movesWithLevel.size());
+
+
 
     char c;
     while (c != 'c'){
@@ -3583,6 +3655,17 @@ void maxCheck(int i){
 }
 
 int main(int argc, char *argv[]){
+
+    parsePokemon(p);
+    parseMoves(m);
+    parsePokemonMoves(pm);
+    parsePokemonSpecies(ps);
+    parseExperience(e);
+    parseTypeNames(tn);
+    parsePokemonStats(pst);
+    parseStats(s);
+    parsePokemonTypes(pt);
+
 
     if (argc >= 1){
         std::string input = argv[1];
