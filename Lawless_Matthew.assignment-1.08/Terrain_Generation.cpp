@@ -9,8 +9,10 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <unordered_set>
 #include <limits.h>
 #include <sstream>
+#include <cmath>
 #include "Terrain_Generation.h"
 #include <ncurses.h>
 
@@ -31,6 +33,9 @@ void printNpcLocation(int pcrow, int pccol, int row, int col);
 void fightInterface(NPC *npc, playerChar_t *pc);
 Map * findMapPCMovingInto(Map *map, world_t *world, int row, int col);
 void pokemonEncounter(Map *map);
+LivePokemon * generatePokemon(Map *map);
+void printLivePokemon(LivePokemon *lp);
+void levelUp(LivePokemon *lp);
 
 std::vector<Pokemon> p;
 std::vector<Move> m;
@@ -2200,21 +2205,29 @@ Map * simulateGame(Map *map, world_t *world){
 
 void pokemonEncounter(Map *map){
 
-    clear();
-
-    printw("here");
-
-    //determine whether or not we encounter a pokemon
+    // //determine whether or not we encounter a pokemon
     int r = (rand() % 10) + 1;
     if (r != 1){
         return;
     }
 
-    printw("here");
+    printLivePokemon(generatePokemon(map));
+
+}
+
+LivePokemon * generatePokemon(Map *map){
+
+    clear();
+
+    
+
+
+
+    
 
     //choose which pokemon we will encounter (x ~ uniform);
     int pk = (rand() % 1092) + 1;
-    printw("here");
+    
     //we will have an array of length 1092 that has all of the pokemon, just take arr[x]
     //to get the pokemon
 
@@ -2223,7 +2236,7 @@ void pokemonEncounter(Map *map){
     int l;
     int mdistance = abs(map->worldCoordinates.x) + abs(map->worldCoordinates.y);
 
-    if (mdistance == 0){
+    if (mdistance == 0 || mdistance == 1){
         l = 1;
     }
     else{
@@ -2237,57 +2250,6 @@ void pokemonEncounter(Map *map){
 
     }
 
-    //now to find the possible moves
-    std::vector<Pokemon_Move> possibleMoves;
-    std::vector<Pokemon_Move> movesWithLevel;
-    //we need to find our pokemon specie id, then go through the list of pokemon_moves and find
-    //pokemon_moves that have their pokemon_id equal to our pokemon species id
-    int speciesId = p[pk].species_id;
-
-    for (int i = 0; i < pm.size(); i++){
-
-        if (pm[i].pokemon_id == speciesId && pm[i].pokemon_move_method_id == 1){
-
-            possibleMoves.push_back(pm[i]);
-
-        }
-
-
-    }
-
-    for (int i = 0; i < possibleMoves.size(); i++){
-
-        if (possibleMoves[i].level < l){
-            movesWithLevel.push_back(possibleMoves[i]);
-        }
-
-    }
-
-    int move1;
-    int move2;
-    if (movesWithLevel.size() > 1){
-        move1 = (rand() % movesWithLevel.size());
-        while (move2 != move1){
-
-            move2 = (rand() % movesWithLevel.size());
-
-        }
-    }
-    else if (movesWithLevel.size() == 1){
-        move1 = 0;
-        move2 = NULL;
-    }
-    else{
-        while (movesWithLevel.size() < 1){
-            l++;
-            for (int i = 0; i < possibleMoves.size(); i++){
-                if (possibleMoves[i].level < l){
-                    movesWithLevel.push_back(possibleMoves[i]);
-                }
-            }
-        }
-    }
-
     //gen additive values to be added to IVS, x ~ [0, 15]
     int hp = rand() % 15;
     int attack = rand() % 15;
@@ -2296,13 +2258,240 @@ void pokemonEncounter(Map *map){
     int specialAttack = rand() % 15;
     int specialDefense = rand() % 15;
 
+    int i = 0;
+    while (p[pk].id != pst[i].pokemon_id){
+        i++;
+    }
+
+    int baseHP;
+    int baseAttack;
+    int baseDefense;
+    int baseSpeed;
+    int baseSpecialAttack;
+    int baseSpecialDefense;
 
 
+    // hp += pst[i].base_stat;
+    baseHP = pst[i].base_stat;
+    i++;
+    //attack += pst[i].base_stat;
+    baseAttack = pst[i].base_stat;
+    i++;
+    //defense += pst[i].base_stat;
+    baseDefense = pst[i].base_stat;
+    i++;
+    //speed += pst[i].base_stat;
+    baseSpeed = pst[i].base_stat;
+    i++;
+    //specialAttack += pst[i].base_stat;
+    baseSpecialAttack = pst[i].base_stat;
+    i++;
+    //specialDefense += pst[i].base_stat;
+    baseSpecialDefense = pst[i].base_stat;
+
+
+
+    const char *s = p[pk].identifier.c_str();
+    bool gender;
+    if (rand() % 2 == 0){
+        gender = true;
+
+    }
+    bool isShiny;
+    if (rand() % 8192 == 0){
+        isShiny = true;
+
+    }
+
+    LivePokemon *lp = new LivePokemon(pk, p[pk].identifier, l, hp, attack, defense, speed, specialAttack, specialDefense, gender, isShiny, baseHP, baseAttack, baseDefense, baseSpeed, baseSpecialAttack, baseSpecialDefense);
+
+
+    //now to find the possible moves
+    std::vector<Pokemon_Move> possibleMoves;
+    std::vector<Pokemon_Move> movesWithLevel;
+    std::unordered_set<int> seenMoves;
+    //we need to find our pokemon specie id, then go through the list of pokemon_moves and find
+    //pokemon_moves that have their pokemon_id equal to our pokemon species id
+    int speciesId = p[pk].species_id;
+
+    for (int i = 0; i < pm.size(); i++){
+
+        if (pm[i].pokemon_id == speciesId && pm[i].pokemon_move_method_id == 1){
+
+            if (seenMoves.find(pm[i].move_id) == seenMoves.end()){
+
+                possibleMoves.push_back(pm[i]);
+                seenMoves.insert(pm[i].move_id);
+
+            }
+            
+
+        }
+
+
+    }
+
+    for (int i = 0; i < possibleMoves.size(); i++){
+
+        if (possibleMoves[i].level < lp->level){
+            movesWithLevel.push_back(possibleMoves[i]);
+        }
+
+    }
+
+    int move1;
+    int move2;
+
+    while (movesWithLevel.size() < 1){
+        levelUp(lp);
+        for (int i = 0; i < possibleMoves.size(); i++){
+            if (possibleMoves[i].level < lp->level){
+                movesWithLevel.push_back(possibleMoves[i]);
+            }
+        }
+    }
+
+    if (movesWithLevel.size() > 1){
+
+        move1 = rand() % movesWithLevel.size();
+        move2 = move1;
+
+        while (move1 == move2){
+            move2 = rand() % movesWithLevel.size();
+        }
+
+
+    }
+    else{
+        move1 = 0;
+        move2 = NULL;
+
+    }
+
+    // if (movesWithLevel.size() > 1){
+    //     move1 = (rand() % movesWithLevel.size());
+    //     while (move2 != move1){
+
+    //         move2 = (rand() % movesWithLevel.size());
+
+    //     }
+    // }
+    // else if (movesWithLevel.size() == 1){
+    //     move1 = 0;
+    //     move2 = NULL;
+    // }
+    // else{
+    //     while (movesWithLevel.size() < 1){
+    //         l++;
+    //         for (int i = 0; i < possibleMoves.size(); i++){
+    //             if (possibleMoves[i].level < l){
+    //                 movesWithLevel.push_back(possibleMoves[i]);
+    //             }
+    //         }
+    //     }
+    // }
+
+    // Move m1;
+    // Move m2;
+    // if (move1 != NULL){
+    //     int i = 0;
+    //     while (m[i].id != move1)
+
+    // }
+
+    //gen ivs, x ~ [0, 15]
+    // int hp = rand() % 15;
+    // int attack = rand() % 15;
+    // int defense = rand() % 15;
+    // int speed = rand() % 15;
+    // int specialAttack = rand() % 15;
+    // int specialDefense = rand() % 15;
+
+    // int i = 0;
+    // while (p[pk].id != pst[i].pokemon_id){
+    //     i++;
+    // }
+
+    // int baseHP;
+    // int baseAttack;
+    // int baseDefense;
+    // int baseSpeed;
+    // int baseSpecialAttack;
+    // int baseSpecialDefense;
+
+
+    // // hp += pst[i].base_stat;
+    // baseHP = pst[i].base_stat;
+    // i++;
+    // //attack += pst[i].base_stat;
+    // baseAttack = pst[i].base_stat;
+    // i++;
+    // //defense += pst[i].base_stat;
+    // baseDefense = pst[i].base_stat;
+    // i++;
+    // //speed += pst[i].base_stat;
+    // baseSpeed = pst[i].base_stat;
+    // i++;
+    // //specialAttack += pst[i].base_stat;
+    // baseSpecialAttack = pst[i].base_stat;
+    // i++;
+    // //specialDefense += pst[i].base_stat;
+    // baseSpecialDefense = pst[i].base_stat;
+
+
+
+    // const char *s = p[pk].identifier.c_str();
+    // bool gender;
+    // if (rand() % 2 == 0){
+    //     gender = true;
+
+    // }
+    // bool isShiny;
+    // if (rand() % 8192 == 0){
+    //     isShiny = true;
+
+    // }
+
+
+
+    // LivePokemon *lp = new LivePokemon(pk, p[pk].identifier, l, hp, attack, defense, speed, specialAttack, specialDefense, gender, isShiny, baseHP, baseAttack, baseDefense, baseSpeed, baseSpecialAttack, baseSpecialDefense);
+
+    // for (int i = 0; i < movesWithLevel.size(); i++){
+
+    //     int j = 0;
+
+    //     while (movesWithLevel[i].move_id != m[j].id){
+    //         j++;
+    //     }
+    //     // printw(m[j].identifier.c_str());
+    //     // printw(" %d", m[j].id);
+    //     lp->moves.push_back(m[j]);
+    //     // printw("\n");
+
+    // }
+    int j = 0;
+    while (movesWithLevel[move1].move_id != m[j].id){
+        j++;
+    }
+    lp->moves.push_back(m[j]);
+    j = 0;
+    if (move2 != NULL){
+        while (movesWithLevel[move2].move_id != m[j].id){
+        j++;
+        }
+        lp->moves.push_back(m[j]);
+
+    }
+    
+
+    return lp;
 
 
     clear();
     printw("Current Encounter:\n");
-    printw("Pokemon: %d\n", pk);
+    printw("Pokemon: %d = ", pk);
+    printw(s);
+    printw("\n");
     printw("Pokemon Level: %d\n", l);
     printw("Manhattan Distance: %d\n", mdistance);
     // for (int i = 0; i < possibleMoves.size(); i++){
@@ -2313,6 +2502,25 @@ void pokemonEncounter(Map *map){
     printw("possibleMove.size() = %d\n", possibleMoves.size());
     printw("movesWithLevel.size() = %d\n", movesWithLevel.size());
 
+    for (int i = 0; i < movesWithLevel.size(); i++){
+
+        int j = 0;
+
+        while (movesWithLevel[i].move_id != m[j].id){
+            j++;
+        }
+        // printw(m[j].identifier.c_str());
+        // printw(" %d", m[j].id);
+        lp->moves.push_back(m[j]);
+        // printw("\n");
+
+    }
+    printw("Moves: \n");
+    if (move1 != NULL){
+        
+
+    }
+
 
 
     char c;
@@ -2322,6 +2530,60 @@ void pokemonEncounter(Map *map){
 
     }
 
+
+
+}
+
+void levelUp(LivePokemon *lp){
+
+    lp->level++;
+
+    lp->hp = floor((((lp->baseHP + lp->hpIV) * 2) * lp->level) / 100) + lp->level + 10;
+
+    lp->attack = floor((((lp->baseAttack + lp->attackIV) * 2) * lp->level) / 100) + 5;
+
+    lp->defense = floor((((lp->baseDefense + lp->defenseIV) * 2) * lp->level) / 100) + 5;
+
+    lp->speed = floor((((lp->baseSpeed + lp->speedIV) * 2) * lp->level) / 100) + 5;
+
+    lp->specialAttack = floor((((lp->baseSpecialAttack + lp->specialAttackIV) * 2) * lp->level) / 100) + 5;
+
+    lp->specialDefense = floor((((lp->baseSpecialDefense + lp->specialDefenseIV) * 2) * lp->level) / 100) + 5;
+
+    
+
+}
+
+void pickPokemon(Map *map){
+
+    clear();
+    //gen 3 pokemon, print them out
+
+}
+
+void printLivePokemon(LivePokemon *lp){
+
+    printw("Name: %s\n", lp->identifier.c_str());
+    printw("Level: %d\n\n", lp->level);
+    printw("Stats: \n");
+    printw("HP: %d\n", lp->hp);
+    printw("Attack: %d\n", lp->attack);
+    printw("Defense: %d\n", lp->defense);
+    printw("Speed: %d\n", lp->speed);
+    printw("Special Attack: %d\n", lp->specialAttack);
+    printw("Special Defense: %d\n\n", lp->specialDefense);
+    for (int i = 0; i < lp->moves.size(); i++){
+
+        printw("Move %d: %s\n", i + 1, (lp->moves[i].identifier).c_str());
+
+    }
+
+    char c;
+    printw("Press 'e' to escape");
+    while (c != 'e'){
+
+        c = getch();
+    }
 
 
 }

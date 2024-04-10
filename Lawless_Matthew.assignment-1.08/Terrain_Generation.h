@@ -1,5 +1,40 @@
 #include "heap.h"
 
+// class LivePokemon{
+//     public:
+//         int id;
+//         std::string identifier;
+//         int level;
+//         std::vector<Move> moves;
+//         int hp;
+//         int attack;
+//         int defense;
+//         int speed;
+//         int specialAttack;
+//         int specialDefense;
+//         //male = t, female = f
+//         bool gender;
+//         bool isShiny;
+
+//     LivePokemon(int id, std::string identifier, int level, int hp, int attack, int defense, int speed, int specialAttack, int specialDefense, bool gender, bool isShiny){
+
+//         this->id = id;
+//         this->identifier = identifier;
+//         this->level = level;
+//         this->hp = hp;
+//         this->attack = attack;
+//         this->defense = defense;
+//         this->speed = speed;
+//         this->specialAttack = specialAttack;
+//         this->specialDefense = specialDefense;
+//         this->gender = gender;
+//         this->isShiny = isShiny;
+
+
+//     }
+
+// };
+
 class Pokemon{
 
     public:
@@ -303,7 +338,73 @@ class Pokemon_Type{
 };
 
 
+class LivePokemon{
+    public:
+        int id;
+        std::string identifier;
+        int level;
+        std::vector<Move> moves;
+        int hpIV;
+        int attackIV;
+        int defenseIV;
+        int speedIV;
+        int specialAttackIV;
+        int specialDefenseIV;
+        //male = t, female = f
+        bool gender;
+        bool isShiny;
 
+        int baseHP;
+        int baseAttack;
+        int baseDefense;
+        int baseSpeed;
+        int baseSpecialAttack;
+        int baseSpecialDefense;
+
+        int hp;
+        int attack;
+        int defense;
+        int speed;
+        int specialAttack;
+        int specialDefense;
+
+
+    LivePokemon(int id, std::string identifier, int level, int hpIV, int attackIV, int defenseIV, int speedIV, int specialAttackIV, int specialDefenseIV, bool gender, bool isShiny, int baseHP, int baseAttack, int baseDefense, int baseSpeed, int baseSpecialAttack, int baseSpecialDefense){
+
+        this->id = id;
+        this->identifier = identifier;
+        this->level = level;
+        this->hp = hp;
+        this->attack = attack;
+        this->defense = defense;
+        this->speed = speed;
+        this->specialAttack = specialAttack;
+        this->specialDefense = specialDefense;
+        this->gender = gender;
+        this->isShiny = isShiny;
+        this->baseHP = baseHP;
+        this->baseAttack = baseAttack;
+        this->baseDefense = baseDefense;
+        this->baseSpeed = baseSpeed;
+        this->baseSpecialAttack = baseSpecialAttack;
+        this->baseSpecialDefense = baseSpecialDefense;
+
+        this->hp = floor((((this->baseHP + this->hpIV) * 2) * this->level) / 100) + this->level + 10;
+
+        this->attack = floor((((this->baseAttack + this->attackIV) * 2) * this->level) / 100) + 5;
+
+        this->defense = floor((((this->baseDefense + this->defenseIV) * 2) * this->level) / 100) + 5;
+
+        this->speed = floor((((this->baseSpeed + this->speedIV) * 2) * this->level) / 100) + 5;
+
+        this->specialAttack = floor((((this->baseSpecialAttack + this->specialAttackIV) * 2) * this->level) / 100) + 5;
+
+        this->specialDefense = floor((((this->baseSpecialDefense + this->specialDefenseIV) * 2) * this->level) / 100) + 5;
+
+
+    }
+
+};
 
 
 class NPC{
