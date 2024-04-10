@@ -2558,6 +2558,40 @@ void pickPokemon(Map *map){
 
     clear();
     //gen 3 pokemon, print them out
+    printw("Note: If one of the pokemon is above level 1, this is because in order to give the pokemon a move, we had to level it up\n");
+    printw("Choice 1:\n");
+    LivePokemon *c1 = generatePokemon(map);
+    printLivePokemon(c1);
+    printw("Choice 2:\n");
+    LivePokemon *c2 = generatePokemon(map);
+    printLivePokemon(c2);
+    printw("Choice 3:\n");
+    LivePokemon *c3 = generatePokemon(map);
+    printLivePokemon(c3);
+    printw("\n");
+    printw("Input 1, 2, or 3\n");
+    char ch;
+    while (ch != '1' && ch != '2' && ch != '3'){
+
+        ch = getch();
+
+    }
+
+    map->pc->pokemon = new std::vector<LivePokemon>;
+
+    if (ch == '1'){
+        map->pc->pokemon.push_back(*c1);
+    }
+    else if (ch == '2'){
+        map->pc->pokemon.push_back(*c2);
+    }
+    else{
+        map->pc->pokemon.push_back(*c3);
+    }
+
+    printw("here");
+
+
 
 }
 
@@ -4511,6 +4545,7 @@ int main(int argc, char *argv[]){
     // spawnNPC(start, &pacer);
     // spawnNPC(start, &wanderer);
     // spawnNPC(start, explorer);
+    pickPokemon(start);
     printMap(*start);
     printw("-------------------------------------------\n");
 

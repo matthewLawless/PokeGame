@@ -448,6 +448,7 @@ typedef struct playerChar{
     int row;
     int col;
     heap_node_t *heapNode;
+    // std::vector<LivePokemon> pokemon;
     
 
 }playerChar_t;
