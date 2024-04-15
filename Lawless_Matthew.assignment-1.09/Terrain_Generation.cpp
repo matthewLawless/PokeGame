@@ -37,6 +37,7 @@ LivePokemon * generatePokemon(Map *map);
 void printLivePokemon(LivePokemon *lp, int y, int x);
 void levelUp(LivePokemon *lp);
 void giveNPCPokemon(NPC *npc, Map *map);
+void trainerBattle(NPC *npc, playerChar *pc);
 
 std::vector<Pokemon> p;
 std::vector<Move> m;
@@ -2841,20 +2842,23 @@ Map * findMapPCMovingInto(Map *map, world_t *world, int row, int col){
 void fightInterface(NPC *npc, playerChar *pc){
 
     clear();
-    printw("placeholder for pokemon battle. press 'esc' to exit\n");
-    printNPC(npc);
 
-    printw("Number of pokemon (npc): %d\n", npc->pokemon.size());
-    printw("Names and levels of pokemon:\n");
-    for (int i = 0; i < npc->pokemon.size(); i++){
-        printw(npc->pokemon[i].identifier.c_str());
-        printw(" (%d)\n", npc->pokemon[i].level);
-    }
-    printw("\n");
+    trainerBattle(npc, pc);
 
-    printw("Print the entire first pokemon. All of the pokemon are generated from the same function call in a loop, so if this pokemon is generated correctly, all of them are.\n\n");
+    // printw("placeholder for pokemon battle. press 'esc' to exit\n");
+    // printNPC(npc);
 
-    printLivePokemon(&(npc->pokemon[0]), -1, -1);
+    // printw("Number of pokemon (npc): %d\n", npc->pokemon.size());
+    // printw("Names and levels of pokemon:\n");
+    // for (int i = 0; i < npc->pokemon.size(); i++){
+    //     printw(npc->pokemon[i].identifier.c_str());
+    //     printw(" (%d)\n", npc->pokemon[i].level);
+    // }
+    // printw("\n");
+
+    // printw("Print the entire first pokemon. All of the pokemon are generated from the same function call in a loop, so if this pokemon is generated correctly, all of them are.\n\n");
+
+    // printLivePokemon(&(npc->pokemon[0]), -1, -1);
 
 
     char fc;
@@ -2878,6 +2882,60 @@ void fightInterface(NPC *npc, playerChar *pc){
     }
 
     npc->foughtPC = 1;
+
+}
+
+void trainerBattle(NPC *npc, playerChar *pc){
+
+    clear();
+
+    int turn = 0;
+    char c;
+    bool b = true;
+
+    while (b){
+
+        printw("Options: \n");
+        printw("'f' to Fight\n");
+        printw("'b' to use an item from your Bag\n");
+        printw("'r' to flee the battle\n");
+        printw("'p' to switch to a different active Pokemon");
+
+        c = getch();
+
+        switch (c){
+
+            case 'f':
+            printw("Fight\n");
+            break;
+            case 'b':
+            printw("Look in Bag\n");
+            break;
+            case 'r':
+            printw("Run from fight\n");
+            break;
+            case 'p':
+            printw("Switch Pokemon\n");
+            break;
+            case 'e':
+            b = false;
+            break;
+            default:
+            printw("Unkown input\n");
+            break;
+
+
+        }
+
+
+    }
+    
+
+}
+
+void wildBattle(playerChar *pc, LivePokemon *lp){
+
+
 
 }
 
