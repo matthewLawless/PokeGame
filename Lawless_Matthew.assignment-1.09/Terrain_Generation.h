@@ -432,7 +432,7 @@ class NPC{
         //0 if false, 1 if true
         int foughtPC;
 
-        std::vector<LivePokemon> pokemon;
+        std::vector<LivePokemon*> pokemon;
 
     NPC(){};
 
@@ -454,7 +454,7 @@ class playerChar{
         int row;
         int col;
         heap_node_t *heapNode;
-        std::vector<LivePokemon> pokemon;
+        std::vector<LivePokemon*> pokemon;
         int supplyNumber = 2;
         int potions = supplyNumber;
         int revives = supplyNumber;
