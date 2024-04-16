@@ -2912,44 +2912,223 @@ void trainerBattle(NPC *npc, playerChar *pc){
 
         switch (c){
 
-            case 'f':
-            // printw("Fight\n");
-            //Let user select move from active pokemon
-            
-            // LivePokemon pcLP = pc->pokemon[pcPokemonIndex];
+            case 'f':{
+                // printw("Fight\n");
+                //Let user select move from active pokemon
+                
+                // LivePokemon pcLP = pc->pokemon[pcPokemonIndex];
 
-            printw("Choose your move (type the corresponding number): \n");
-            
-            printLivePokemon(&(pc->pokemon[pcPokemonIndex]), -1, -1);
+                printw("Choose your move (type the corresponding number): \n");
+                
+                printLivePokemon(&(pc->pokemon[pcPokemonIndex]), -1, -1);
 
-            char moveChoice;
-            
-            while (true){
+                char moveChoice;
+                
+                while (true){
 
-                moveChoice = getch();
+                    moveChoice = getch();
 
-                if (moveChoice == '2' && pc->pokemon[pcPokemonIndex].moves.size() == 2){
+                    if (moveChoice == '2' && pc->pokemon[pcPokemonIndex].moves.size() == 2){
 
-                    // pcM = pcLP.moves[1];
-                    choice = 1;
-                    break;
+                        // pcM = pcLP.moves[1];
+                        choice = 1;
+                        break;
+
+                    }
+                    else if (moveChoice == '1'){
+                        // pcM = pcLP.moves[0];
+                        choice = 0;
+                        break;
+
+                    }
+
+                    
 
                 }
-                else if (moveChoice == '1'){
-                    // pcM = pcLP.moves[0];
-                    choice = 0;
-                    break;
+                // Move pcM = pcLP.moves[choice];
+
+                LivePokemon pcLP = pc->pokemon[pcPokemonIndex];
+                Move pcM = pcLP.moves[choice];
+
+                //get npcs action
+                //find the npcs current active pokemon
+                LivePokemon npcLP = npc->pokemon[npcPokemonIndex];
+                //choose a random move from this pokemon
+                Move npcM = npcLP.moves[rand() % npcLP.moves.size()];
+
+                if (npcM.priority > pcM.priority){
+
+                    printw("NPC uses %s\n", npcM.identifier.c_str());
+                    if (rand() % 100 > npcM.accuracy){
+
+                        printw("The move misses!\n");
+
+                    }
+                    else{
+                        int damage = computeDamage(npcM, npcLP, pcLP);
+                        printw("It does %d damage to %s\n", damage, pcLP.identifier.c_str());
+                        pcLP.hp -= damage;
+
+                        printw("%s has %d HP left!\n", pcLP.identifier.c_str(), pcLP.hp);
+
+                        //CHECKPOINT
+                        printw("Hit 'c' to continue\n");
+                        while (true){
+                            if (getch() == 'c'){
+                            break;
+                            }
+                        }
+                        //CHECKPOINT
+                        if (pcLP.hp <= 0){
+
+                            printw("%s has fainted!\n", pcLP.identifier.c_str());
+                            pcPokemonIndex++;
+                            if (pcPokemonIndex >= pc->pokemon.size()){
+
+                                printw("You ran out of Pokemon and lost the fight!\n");
+                                b = false;
+
+                            }
+
+                        }
+                        else{
+
+                            printw("PC uses %s\n", pcM.identifier.c_str());
+                            if (rand() % 100 > npcM.accuracy){
+
+                                printw("The move misses!\n");
+
+                            }
+                            else{
+                                int damage = computeDamage(pcM, pcLP, npcLP);
+                                printw("It does %d damge to %s\n", damage, npcLP.identifier.c_str());
+                                npcLP.hp -= damage;
+
+                                printw("%s has %d HP left!\n", npcLP.identifier.c_str(), npcLP.hp);
+
+                                if (npcLP.hp <= 0){
+
+                                    printw("%s has fainted!\n", npcLP.identifier.c_str());
+                                    npcPokemonIndex++;
+                                    if (npcPokemonIndex >= npc->pokemon.size()){
+
+                                        printw("The NPC ran out of Pokemon and lost the fight!\n");
+                                        b = false;
+
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+                else{
+
+                    printw("PC uses %s\n", pcM.identifier.c_str());
+                    if (rand() % 100 > pcM.accuracy){
+
+                        printw("The move misses!\n");
+
+                    }
+                    else{
+                        int damage = computeDamage(pcM, pcLP, npcLP);
+                        printw("It does %d damge to %s\n", damage, npcLP.identifier.c_str());
+                        npcLP.hp -= damage;
+
+                        printw("%s has %d HP left!\n", npcLP.identifier.c_str(), npcLP.hp);
+
+                        if (npcLP.hp <= 0){
+
+                            printw("%s has fainted!\n", npcLP.identifier.c_str());
+                            npcPokemonIndex++;
+                            if (npcPokemonIndex >= npc->pokemon.size()){
+
+                                printw("The NPC ran out of Pokemon and lost the fight!\n");
+                                b = false;
+
+                            }
+                        }
+                        else{
+
+                            printw("NPC uses %s\n", npcM.identifier.c_str());
+                            if (rand() % 100 > npcM.accuracy){
+                                printw("The move misses\n");
+                            }
+                            else{
+
+                                int damage = computeDamage(npcM, npcLP, pcLP);
+                                printw("It does %d damage to %s\n", damage, pcLP.identifier.c_str());
+                                pcLP.hp -= damage;
+
+                                printw("%s has %d HP left!\n", pcLP.identifier.c_str(), pcLP.hp);
+
+                                if (pcLP.hp <= 0){
+                                    printw("%s has fainted\n", pcLP.identifier.c_str());
+                                    pcPokemonIndex++;
+                                    if (pcPokemonIndex >= pc->pokemon.size()){
+                                        printw("The PC ran out of Pokemon and lost the fight!\n");
+                                        b = false;
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
+                    
 
                 }
 
                 
 
+
+
+                
+                break;
             }
-            // Move pcM = pcLP.moves[choice];
-            break;
-            
             case 'b':{
             printw("Look in Bag\n");
+            printw("Printing the contents of the bag:\n");
+            printw("Revives: %d\n", pc->revives);
+            printw("Potions: %d\n", pc->potions);
+            printw("Pokeballs: %d\n", pc->pokeballs);
+
+            char bagChoice;
+            printw("Choose 'r' for revive, 'p' for potion, 'b' for pokeball, or 'e' to exit the bag.\n");
+            while (true){
+
+                bagChoice = getch();
+                if (bagChoice == 'r'){
+
+                    //Revive knocked out pokemon and restore it to half its max HP
+
+                    break;
+                }
+                else if (bagChoice == 'p'){
+
+                    //Restore 20 HP of an alive pokemon, never going above its max HP
+
+                    break;
+                }
+                else if (bagChoice == 'b'){
+
+                    printw("You cannot capture the NPC's Pokemon! Try again.\n");
+
+                }
+                else if (bagChoice == 'e'){
+
+                    break;
+
+                }
+                else{
+
+                    printw("Try again.\n");
+
+                }
+
+            }
             break;
             }
             case 'r':
@@ -2967,7 +3146,10 @@ void trainerBattle(NPC *npc, playerChar *pc){
             while (true){
 
                 p = getch();
-                if (pc->pokemon[(int)(p) + 0].hp <= 0){
+                int i = p - '0';
+                if (pc->pokemon[i].hp <= 0){
+
+                    printw("%d\n", (int) p);
 
                     printw("This pokemon has no HP. Choose another.");
 
@@ -2991,127 +3173,127 @@ void trainerBattle(NPC *npc, playerChar *pc){
 
         }
 
-        LivePokemon pcLP = pc->pokemon[pcPokemonIndex];
-        Move pcM = pcLP.moves[choice];
+        // LivePokemon pcLP = pc->pokemon[pcPokemonIndex];
+        // Move pcM = pcLP.moves[choice];
 
-        //get npcs action
-        //find the npcs current active pokemon
-        LivePokemon npcLP = npc->pokemon[npcPokemonIndex];
-        //choose a random move from this pokemon
-        Move npcM = npcLP.moves[rand() % npcLP.moves.size()];
+        // //get npcs action
+        // //find the npcs current active pokemon
+        // LivePokemon npcLP = npc->pokemon[npcPokemonIndex];
+        // //choose a random move from this pokemon
+        // Move npcM = npcLP.moves[rand() % npcLP.moves.size()];
 
-        if (npcM.priority > pcM.priority){
+        // if (npcM.priority > pcM.priority){
 
-            printw("NPC uses %s\n", npcM.identifier.c_str());
-            if (rand() % 100 > npcM.accuracy){
+        //     printw("NPC uses %s\n", npcM.identifier.c_str());
+        //     if (rand() % 100 > npcM.accuracy){
 
-                printw("The move misses!\n");
+        //         printw("The move misses!\n");
 
-            }
-            else{
-                int damage = computeDamage(npcM, npcLP, pcLP);
-                printw("It does %d damage to %s\n", damage, pcLP.identifier.c_str());
-                pcLP.hp -= damage;
-                //CHECKPOINT
-                printw("Hit 'c' to continue\n");
-                while (true){
-                    if (getch() == 'c'){
-                    break;
-                    }
-                }
-                //CHECKPOINT
-                if (pcLP.hp <= 0){
+        //     }
+        //     else{
+        //         int damage = computeDamage(npcM, npcLP, pcLP);
+        //         printw("It does %d damage to %s\n", damage, pcLP.identifier.c_str());
+        //         pcLP.hp -= damage;
+        //         //CHECKPOINT
+        //         printw("Hit 'c' to continue\n");
+        //         while (true){
+        //             if (getch() == 'c'){
+        //             break;
+        //             }
+        //         }
+        //         //CHECKPOINT
+        //         if (pcLP.hp <= 0){
 
-                    printw("%s has fainted!\n", pcLP.identifier.c_str());
-                    pcPokemonIndex++;
-                    if (pcPokemonIndex >= pc->pokemon.size()){
+        //             printw("%s has fainted!\n", pcLP.identifier.c_str());
+        //             pcPokemonIndex++;
+        //             if (pcPokemonIndex >= pc->pokemon.size()){
 
-                        printw("You ran out of Pokemon and lost the fight!\n");
-                        b = false;
+        //                 printw("You ran out of Pokemon and lost the fight!\n");
+        //                 b = false;
 
-                    }
+        //             }
 
-                }
-                else{
+        //         }
+        //         else{
 
-                    printw("PC uses %s\n", pcM.identifier.c_str());
-                    if (rand() % 100 > npcM.accuracy){
+        //             printw("PC uses %s\n", pcM.identifier.c_str());
+        //             if (rand() % 100 > npcM.accuracy){
 
-                        printw("The move misses!\n");
+        //                 printw("The move misses!\n");
 
-                    }
-                    else{
-                        int damage = computeDamage(pcM, pcLP, npcLP);
-                        printw("It does %d damge to %s\n", damage, npcLP.identifier.c_str());
-                        npcLP.hp -= damage;
-                        if (npcLP.hp <= 0){
+        //             }
+        //             else{
+        //                 int damage = computeDamage(pcM, pcLP, npcLP);
+        //                 printw("It does %d damge to %s\n", damage, npcLP.identifier.c_str());
+        //                 npcLP.hp -= damage;
+        //                 if (npcLP.hp <= 0){
 
-                            printw("%s has fainted!\n", npcLP.identifier.c_str());
-                            npcPokemonIndex++;
-                            if (npcPokemonIndex >= npc->pokemon.size()){
+        //                     printw("%s has fainted!\n", npcLP.identifier.c_str());
+        //                     npcPokemonIndex++;
+        //                     if (npcPokemonIndex >= npc->pokemon.size()){
 
-                                printw("The NPC ran out of Pokemon and lost the fight!\n");
-                                b = false;
+        //                         printw("The NPC ran out of Pokemon and lost the fight!\n");
+        //                         b = false;
 
-                            }
-                        }
+        //                     }
+        //                 }
 
-                    }
+        //             }
 
-                }
-            }
-        }
-        else{
+        //         }
+        //     }
+        // }
+        // else{
 
-            printw("PC uses %s\n", pcM.identifier.c_str());
-            if (rand() % 100 > pcM.accuracy){
+        //     printw("PC uses %s\n", pcM.identifier.c_str());
+        //     if (rand() % 100 > pcM.accuracy){
 
-                printw("The move misses!\n");
+        //         printw("The move misses!\n");
 
-            }
-            else{
-                int damage = computeDamage(pcM, pcLP, npcLP);
-                printw("It does %d damge to %s\n", damage, npcLP.identifier.c_str());
-                npcLP.hp -= damage;
-                if (npcLP.hp <= 0){
+        //     }
+        //     else{
+        //         int damage = computeDamage(pcM, pcLP, npcLP);
+        //         printw("It does %d damge to %s\n", damage, npcLP.identifier.c_str());
+        //         npcLP.hp -= damage;
+        //         if (npcLP.hp <= 0){
 
-                    printw("%s has fainted!\n", npcLP.identifier.c_str());
-                    npcPokemonIndex++;
-                    if (npcPokemonIndex >= npc->pokemon.size()){
+        //             printw("%s has fainted!\n", npcLP.identifier.c_str());
+        //             npcPokemonIndex++;
+        //             if (npcPokemonIndex >= npc->pokemon.size()){
 
-                        printw("The NPC ran out of Pokemon and lost the fight!\n");
-                        b = false;
+        //                 printw("The NPC ran out of Pokemon and lost the fight!\n");
+        //                 b = false;
 
-                    }
-                }
-                else{
+        //             }
+        //         }
+        //         else{
 
-                    printw("NPC uses %s\n", npcM.identifier.c_str());
-                    if (rand() % 100 > npcM.accuracy){
-                        printw("The move misses\n");
-                    }
-                    else{
+        //             printw("NPC uses %s\n", npcM.identifier.c_str());
+        //             if (rand() % 100 > npcM.accuracy){
+        //                 printw("The move misses\n");
+        //             }
+        //             else{
 
-                        int damage = computeDamage(npcM, npcLP, pcLP);
-                        printw("It does %d damage to %s\n", damage, pcLP.identifier.c_str());
-                        pcLP.hp -= damage;
-                        if (pcLP.hp <= 0){
-                            printw("%s has fainted\n", pcLP.identifier.c_str());
-                            pcPokemonIndex++;
-                            if (pcPokemonIndex >= pc->pokemon.size()){
-                                printw("The PC ran out of Pokemon and lost the fight!\n");
-                                b = false;
-                            }
-                        }
+        //                 int damage = computeDamage(npcM, npcLP, pcLP);
+        //                 printw("It does %d damage to %s\n", damage, pcLP.identifier.c_str());
+        //                 pcLP.hp -= damage;
+        //                 if (pcLP.hp <= 0){
+        //                     printw("%s has fainted\n", pcLP.identifier.c_str());
+        //                     pcPokemonIndex++;
+        //                     if (pcPokemonIndex >= pc->pokemon.size()){
+        //                         printw("The PC ran out of Pokemon and lost the fight!\n");
+        //                         b = false;
+        //                     }
+        //                 }
 
-                    }
+        //             }
 
-                }
+        //         }
 
-            }
+        //     }
             
 
-        }
+        // }
         
 
         

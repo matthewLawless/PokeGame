@@ -455,6 +455,10 @@ class playerChar{
         int col;
         heap_node_t *heapNode;
         std::vector<LivePokemon> pokemon;
+        int supplyNumber = 2;
+        int potions = supplyNumber;
+        int revives = supplyNumber;
+        int pokeballs = supplyNumber;
 
     playerChar(){};
     
